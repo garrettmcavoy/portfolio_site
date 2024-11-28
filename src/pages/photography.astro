@@ -1,72 +1,70 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const images_2018 = import.meta.glob('../images/2018/*.jpg', { eager: true }) as Record<string, { default: string }>;
+
+// Import 2024 images
+import img2024_7 from '../images/2024/2024_7.jpg';
+import img2024_22 from '../images/2024/2024_22.jpg';
+import img2024_19 from '../images/2024/2024_19.jpg';
+import img2024_6 from '../images/2024/2024_6.jpg';
+import img2024_4 from '../images/2024/2024_4.jpg';
+import img2024_5 from '../images/2024/2024_5.jpg';
+import img2024_2 from '../images/2024/2024_2.jpg';
+import img2024_10 from '../images/2024/2024_10.jpg';
+import img2024_14 from '../images/2024/2024_14.jpg';
+import img2024_20 from '../images/2024/2024_20.jpg';
+import img2024_12 from '../images/2024/2024_12.jpg';
+import img2024_1 from '../images/2024/2024_1.jpg';
+import img2024_15 from '../images/2024/2024_15.jpg';
+import img2024_21 from '../images/2024/2024_21.jpg';
+import img2024_3 from '../images/2024/2024_3.jpg';
+
+// Import 2018 images
+import img2018_1 from '../images/2018/2018_1.jpg';
+import img2018_2 from '../images/2018/2018_2.jpg';
+import img2018_3 from '../images/2018/2018_3.jpg';
+import img2018_4 from '../images/2018/2018_4.jpg';
 ---
+
 <Layout title="Garrett McAvoy">
     <div class="cv-container">
-        <!-- Photography content starts here -->
         <div class="photography-container">
+            <!-- 2024 Section -->
             <div class="year-section">
                 <p class="year-title">2024</p>
                 <div class="photo-scroll">
-                    <img src="/images/2024/2024_7.jpg" />
-                    <img src="/images/2024/2024_22.jpg" />
-                    <img src="/images/2024/2024_19.jpg" />
-                    <img src="/images/2024/2024_6.jpg" />
-                    <img src="/images/2024/2024_4.jpg" />
-                    <img src="/images/2024/2024_5.jpg" />
-                    <img src="/images/2024/2024_2.jpg" />
-                    <img src="/images/2024/2024_10.jpg" />
-                    <img src="/images/2024/2024_14.jpg" />
-                    <img src="/images/2024/2024_20.jpg" />
-                    <img src="/images/2024/2024_12.jpg" />
-                    <img src="/images/2024/2024_1.jpg" />
-                    <img src="/images/2024/2024_15.jpg" />
-                    <img src="/images/2024/2024_21.jpg" />
-                    <img src="/images/2024/2024_3.jpg" />
+                    <img src={img2024_7.src} alt="2024 Image 7" />
+                    <img src={img2024_22.src} alt="2024 Image 22" />
+                    <img src={img2024_19.src} alt="2024 Image 19" />
+                    <img src={img2024_6.src} alt="2024 Image 6" />
+                    <img src={img2024_4.src} alt="2024 Image 4" />
+                    <img src={img2024_5.src} alt="2024 Image 5" />
+                    <img src={img2024_2.src} alt="2024 Image 2" />
+                    <img src={img2024_10.src} alt="2024 Image 10" />
+                    <img src={img2024_14.src} alt="2024 Image 14" />
+                    <img src={img2024_20.src} alt="2024 Image 20" />
+                    <img src={img2024_12.src} alt="2024 Image 12" />
+                    <img src={img2024_1.src} alt="2024 Image 1" />
+                    <img src={img2024_15.src} alt="2024 Image 15" />
+                    <img src={img2024_21.src} alt="2024 Image 21" />
+                    <img src={img2024_3.src} alt="2024 Image 3" />
                 </div>
             </div>
-            <div class="year-section">
-                <p class="year-title">2023</p>
-                <div class="photo-scroll">
-                    <img src="/images/2023/2023_3.jpg" />
-                    <img src="/images/2023/2023_1.jpg" />
-                    <img src="/images/2023/2023_2.jpg" />
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2021</p>
-                <div class="photo-scroll">
-                    <img src="/images/2021/2021_1.jpg" />
-                    <img src="/images/2021/2021_2.jpg" />
-                    <img src="/images/2021/2021_3.jpg" />
-                    <img src="/images/2021/2021_4.jpg" />
-                </div>
-            </div>
+
+            <!-- 2018 Section -->
             <div class="year-section">
                 <p class="year-title">2018</p>
                 <div class="photo-scroll">
-                    {Object.values(images_2018).map(image => (
-                        <img src={image.default} alt="Gallery image" />
-                    ))}
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2017</p>
-                <div class="photo-scroll">
-                    <img src="/images/2017/2017_1.jpg" />
-                    <img src="/images/2017/2017_2.jpg" />
-                    <img src="/images/2017/2017_3.jpg" />
-                    <img src="/images/2017/2017_4.jpg" />
+                    <img src={img2018_1.src} alt="2018 Image 1" />
+                    <img src={img2018_2.src} alt="2018 Image 2" />
+                    <img src={img2018_3.src} alt="2018 Image 3" />
+                    <img src={img2018_4.src} alt="2018 Image 4" />
                 </div>
             </div>
         </div>
-        <!-- Photography content ends here -->
     </div>
 </Layout>
 
 <style>
-    /* Use the same styles as in your CV page */
     .cv-container {
         width: 100%;
         margin: 0 auto;
@@ -76,7 +74,6 @@ const images_2018 = import.meta.glob('../images/2018/*.jpg', { eager: true }) as
         gap: 1rem;
     }
 
-    /* Photography-specific styles */
     .photography-container {
         display: flex;
         flex-direction: column;
@@ -92,7 +89,7 @@ const images_2018 = import.meta.glob('../images/2018/*.jpg', { eager: true }) as
     .year-title {
         font-size: 1rem;
         font-weight: bold;
-        margin-bottom: 0rem;
+        margin-bottom: 0.5rem;
     }
 
     .photo-scroll {
@@ -112,29 +109,19 @@ const images_2018 = import.meta.glob('../images/2018/*.jpg', { eager: true }) as
         scroll-snap-align: center;
     }
 
-    /* Hide Scrollbar */
     .photo-scroll::-webkit-scrollbar {
         display: none;
     }
 
-    .year-section:last-of-type {
-    margin-bottom: 5rem; /* Adjust value as needed */
-}
-
-    /* Responsive Adjustments */
     @media (max-width: 768px) {
         .photo-scroll img {
-            max-width: 100%;  /* Ensure image doesn't exceed container width */
-            height: auto;     /* Maintain aspect ratio */
-            object-fit: contain; /* Adjust object-fit to prevent cropping */
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .year-title {
-            font-size: 1.25rem;
-        }
-
-        .cv-container {
-            padding: 1rem;
+            font-size: 1rem;
         }
     }
 </style>
