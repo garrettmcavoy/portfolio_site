@@ -1,0 +1,29 @@
+---
+export interface Props {
+    title: string;
+    items: { name: string; href: string }[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<li x-data="{ open: false }" class="dropdown">
+    <a href="#" @click.prevent="open = !open" class="dropdown-toggle">{title}</a>
+    <ul 
+        x-show="open"
+        x-transition
+        class="dropdown-menu"
+        @click.outside="if (!event.target.closest('.dropdown-menu')) open = false"
+    >
+        {items.map(item => (
+            <li>
+                <a 
+                    href={item.href}
+                    @click="event.preventDefault(); open = true; window.location.href = item.href;"
+                >
+                    {item.name}
+                </a>
+            </li>
+        ))}
+    </ul>
+</li>
