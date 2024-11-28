@@ -18,20 +18,20 @@ const { title } = Astro.props;
             <!-- Sidebar / Navbar -->
             <aside class="sidebar">
                 <div class="title">
-                    <a href={`${import.meta.env.BASE_URL}`}>Garrett McAvoy</a>
+                    <a href={`portfolio_site/src/pages/index`}>Garrett McAvoy</a>
                 </div>
                 <nav>
                     <ul>
-                        <li><a href={`${import.meta.env.BASE_URL}about`}>About</a></li>
+                        <li><a href={`portfolio_site/src/pages/about`}>About</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle">Portfolio</a>
                             <ul class="dropdown-menu">
-                                <li><a href={`${import.meta.env.BASE_URL}engineering`}>Engineering</a></li>
-                                <li><a href={`${import.meta.env.BASE_URL}photography`}>Photography</a></li>
-                                <li><a href={`${import.meta.env.BASE_URL}other`}>Other</a></li>
+                                <li><a href={`portfolio_site/src/pages/engineering`}>Engineering</a></li>
+                                <li><a href={`portfolio_site/src/pages/photography`}>Photography</a></li>
+                                <li><a href={`portfolio_site/src/pages/other`}>Other</a></li>
                             </ul>
                         </li>
-                        <li><a href={`${import.meta.env.BASE_URL}cv`}>CV</a></li>
+                        <li><a href={`portfolio_site/src/pages/cv`}>CV</a></li>
                     </ul>
                 </nav>
             </aside>
