@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const images_2018 = import.meta.glob('../images/2018/*.jpg', { eager: true }) as Record<string, { default: string }>;
 ---
 <Layout title="Garrett McAvoy">
     <div class="cv-container">
@@ -45,15 +46,9 @@ import Layout from '../layouts/Layout.astro';
             <div class="year-section">
                 <p class="year-title">2018</p>
                 <div class="photo-scroll">
-                    <img src="/images/2018/2018_6.jpg" />
-                    <img src="/images/2018/2018_1.jpg" />
-                    <img src="/images/2018/2018_2.jpg" />
-                    <img src="/images/2018/2018_3.jpg" />
-                    <img src="/images/2018/2018_4.jpg" />
-                    <img src="/images/2018/2018_5.jpg" />
-                    <img src="/images/2018/2018_7.jpg" />
-                    <img src="/images/2018/2018_8.jpg" />
-                    <img src="/images/2018/2018_9.jpg" />
+                    {Object.values(images_2018).map(image => (
+                        <img src={image.default} alt="Gallery image" />
+                    ))}
                 </div>
             </div>
             <div class="year-section">
