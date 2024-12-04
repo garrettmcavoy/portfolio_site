@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
             <p class="section-title">Education</p>
             <div class="entry">
                 <div class="experience">
-                    <p>California Polytechnic State University, San&nbsp;Luis&nbsp;Obispo, CA</p>
+                    <p>California Polytechnic State University, San&nbsp;Luis&nbsp;Obispo,&nbsp;CA</p>
                     <p>Bachelor of Science, Mechanical Engineering</p>
                 </div>
                 <div class="date-item">
@@ -20,7 +20,7 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Work Section -->
         <div class="section">
-            <p class="section-title">Work</p>
+            <p class="section-title">Experience</p>
             <div class="entry">
                 <div class="experience">
                     <p>Apple - Manufacturing Design Engineer Intern</p>
@@ -44,24 +44,29 @@ import Layout from '../layouts/Layout.astro';
 <style>
     /* General Container */
     .cv-container {
-        max-width: 100%; /* Restrict overall width for readability */
-        margin: 0rem auto;
-        padding: 0rem;
         display: flex;
-        flex-direction: column;
+        padding: 0;
+        margin: 0 auto;
         gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+        flex-direction: column;
+        box-sizing: border-box;
     }
 
     /* Section Container */
     .section {
+        padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        margin-bottom: 1rem;
     }
 
     .section-title {
         font-weight: bold;
-        margin-bottom: 0rem;
+        padding: 0;
+        margin-bottom: 1rem;
+
     }
 
     /* Individual Entry (Experience + Date) */
@@ -69,11 +74,13 @@ import Layout from '../layouts/Layout.astro';
         display: flex;
         justify-content: space-between; /* Experience and Date side by side */
         align-items: flex-start;
+        width: 100%;
         gap: 1rem;
     }
 
     .experience {
-        flex: 1; /* Takes up more space */
+        flex: 2; /* Takes up more space */
+        max-width: 500px;
     }
 
     .experience p {
@@ -86,17 +93,26 @@ import Layout from '../layouts/Layout.astro';
         justify-content: flex-start; /* Align dates to the left */
         align-items: center;
         font-style: italic;
+        width: 100%;
+        margin-bottom: 1rem;
     }
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
+
+        .cv-container {
+            width: auto;
+        }
+
         .entry {
             flex-direction: column; /* Stack experience and date vertically */
             align-items: flex-start;
+            gap: 0rem;
         }
 
-        .date-item {
-            margin-top: -1rem; /* Add space between experience and date */
-        }
+        .experience {
+        flex: 2; /* Takes up more space */
+        max-width: 100%;
+    }
     }
 </style>
