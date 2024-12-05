@@ -3,134 +3,147 @@ import Layout from '../layouts/Layout.astro';
 ---
 <Layout title="Garrett McAvoy">
     <div class="cv-container">
+        <!-- Photography content starts here -->
         <div class="photography-container">
             <div class="year-section">
                 <p class="year-title">2024</p>
-                <div class="photo-display">
-                    <input type="radio" name="slider" id="slide1" checked />
-                    <input type="radio" name="slider" id="slide2" />
-                    <input type="radio" name="slider" id="slide3" />
-                    <input type="radio" name="slider" id="slide4" />
-                    <!-- Add as many inputs as you have images -->
-
-                    <div class="slides">
-                        <label for="slide1" class="slide">
-                            <img src="../images/2024/2024_7.jpg" alt="Image 1" />
-                        </label>
-                        <label for="slide2" class="slide">
-                            <img src="../images/2024/2024_22.jpg" alt="Image 2" />
-                        </label>
-                        <label for="slide3" class="slide">
-                            <img src="../images/2024/2024_19.jpg" alt="Image 3" />
-                        </label>
-                        <label for="slide4" class="slide">
-                            <img src="../images/2024/2024_6.jpg" alt="Image 4" />
-                        </label>
-                        <!-- Add as many labels as you have images -->
-                    </div>
-
-                    <div class="nav-buttons">
-                        <label for="slide1" class="nav prev">❮</label>
-                        <label for="slide2" class="nav next">❯</label>
-                        <label for="slide3" class="nav next">❯</label>
-                        <label for="slide4" class="nav next">❯</label>
-                    </div>
+                <div class="photo-scroll">
+                    <img src="../images/2024/2024_7.jpg" />
+                    <img src="../images/2024/2024_22.jpg" />
+                    <img src="../images/2024/2024_19.jpg" />
+                    <img src="../images/2024/2024_6.jpg" />
+                    <img src="../images/2024/2024_4.jpg" />
+                    <img src="../images/2024/2024_5.jpg" />
+                    <img src="../images/2024/2024_2.jpg" />
+                    <img src="../images/2024/2024_10.jpg" />
+                    <img src="../images/2024/2024_14.jpg" />
+                    <img src="../images/2024/2024_20.jpg" />
+                    <img src="../images/2024/2024_12.jpg" />
+                    <img src="../images/2024/2024_1.jpg" />
+                    <img src="../images/2024/2024_15.jpg" />
+                    <img src="../images/2024/2024_21.jpg" />
+                    <img src="../images/2024/2024_3.jpg" />
+                </div>
+            </div>
+            <div class="year-section">
+                <p class="year-title">2023</p>
+                <div class="photo-scroll">
+                    <img src="../images/2023/2023_3.jpg" />
+                    <img src="../images/2023/2023_1.jpg" />
+                    <img src="../images/2023/2023_2.jpg" />
+                </div>
+            </div>
+            <div class="year-section">
+                <p class="year-title">2021</p>
+                <div class="photo-scroll">
+                    <img src="../images/2021/2021_1.jpg" />
+                    <img src="../images/2021/2021_2.jpg" />
+                    <img src="../images/2021/2021_3.jpg" />
+                    <img src="../images/2021/2021_4.jpg" />
+                </div>
+            </div>
+            <div class="year-section">
+                <p class="year-title">2018</p>
+                <div class="photo-scroll">
+                    <img src="../images/2018/2018_6.jpg" />
+                    <img src="../images/2018/2018_1.jpg" />
+                    <img src="../images/2018/2018_2.jpg" />
+                    <img src="../images/2018/2018_3.jpg" />
+                    <img src="../images/2018/2018_4.jpg" />
+                    <img src="../images/2018/2018_5.jpg" />
+                    <img src="../images/2018/2018_7.jpg" />
+                    <img src="../images/2018/2018_8.jpg" />
+                    <img src="../images/2018/2018_9.jpg" />
+                </div>
+            </div>
+            <div class="year-section">
+                <p class="year-title">2017</p>
+                <div class="photo-scroll">
+                    <img src="../images/2017/2017_1.jpg" />
+                    <img src="../images/2017/2017_2.jpg" />
+                    <img src="../images/2017/2017_3.jpg" />
+                    <img src="../images/2017/2017_4.jpg" />
                 </div>
             </div>
         </div>
+        <!-- Photography content ends here -->
     </div>
 </Layout>
 
 <style>
+    /* Use the same styles as in your CV page */
     .cv-container {
         overflow: hidden;
         display: flex;
         padding: 0;
         margin: 0 auto;
+        gap: 1rem;
+        width: 100%;
         flex-direction: column;
         box-sizing: border-box;
-        align-items: center;
     }
 
+    /* Photography-specific styles */
     .photography-container {
-        max-width: 80%;
+        overflow: hidden;
         display: flex;
+        max-width: 80%;
         flex-direction: column;
         gap: 2rem;
-        align-items: center;
     }
 
     .year-section {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        align-items: center;
     }
 
-    .photo-display {
-        position: relative;
+    .year-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0rem;
+    }
+
+    .photo-scroll {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
     }
 
-    /* Hide the radio inputs */
-    .photo-display input {
+    .photo-scroll img {
+        width: auto;
+        max-height: 400px;
+        object-fit: cover;
+        scroll-snap-align: center;
+    }
+
+    /* Hide Scrollbar */
+    .photo-scroll::-webkit-scrollbar {
         display: none;
     }
 
-    /* Style the slides */
-    .slides {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
+    .year-section:last-of-type {
+    margin-bottom: 5rem; /* Adjust value as needed */
+}
 
-    .slide {
-        position: absolute;
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .photo-scroll img {
+            max-width: 100%;  /* Ensure image doesn't exceed container width */
+            max-height: 300px;     /* Maintain aspect ratio */
+            object-fit: contain; /* Adjust object-fit to prevent cropping */
+        }
 
-    input#slide1:checked ~ .slides label:nth-of-type(1),
-    input#slide2:checked ~ .slides label:nth-of-type(2),
-    input#slide3:checked ~ .slides label:nth-of-type(3),
-    input#slide4:checked ~ .slides label:nth-of-type(4) {
-        opacity: 1;
-        z-index: 1;
-    }
+        .year-title {
+            font-size: 1rem;
+        }
 
-    .slide img {
-        max-width: 100%;
-        max-height: 600px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    /* Navigation buttons */
-    .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .nav {
-        cursor: pointer;
-        font-size: 2rem;
-        color: black;
-        text-decoration: none;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 0.5rem;
-        border-radius: 50%;
-        transition: background 0.3s ease;
-    }
-
-    .nav:hover {
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
+        .cv-container {
+            padding: 0rem;
+        }
     }
 </style>
