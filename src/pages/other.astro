@@ -3,3 +3,33 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Garrett McAvoy">
+    <div class="animation-container">
+        <iframe 
+            src="https://garrettmcavoy.github.io/murex/" 
+            title="Murex Animation"
+            class="animation-frame">
+        </iframe>
+    </div>
+</Layout>
+
+<style>
+    /* Styling for the animation container */
+    .animation-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80vh; /* Full width of the parent */
+        height: 80vh; /* Fit the full viewport height */
+        margin: 0 auto; /* Center container horizontally */
+        overflow: hidden; /* Prevent any overflow issues */
+        border-radius: 15px; /* Rounded corners for the container */
+        background-color: #f0f0f0; /* Optional background color */
+    }
+
+    .animation-frame {
+        width: 100%;
+        height: 100%;
+        border: none; /* Remove iframe border */
+        border-radius: inherit; /* Match container's rounded corners */
+    }
+</style>

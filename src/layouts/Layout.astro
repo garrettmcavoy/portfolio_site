@@ -115,7 +115,7 @@ const { title } = Astro.props;
 
     /* Sidebar / Navbar Styles */
     .sidebar {
-        width: 300px; /* Fixed width for the sidebar */
+        width: 200px; /* Fixed width for the sidebar */
         background-color: #2c3e5000;
         color: #ecf0f1;
         padding: 1rem;
@@ -164,7 +164,7 @@ const { title } = Astro.props;
 
     /* Dropdown Styles */
     .dropdown-menu {
-        width: 40%;
+        width: 60%;
         list-style: none;
         padding: 0;
         margin: 0rem 0 0 0;
@@ -192,9 +192,10 @@ const { title } = Astro.props;
         justify-content: center; /* Center horizontally */
         align-items: flex-start; /* Align to top */
         height: 100vh;
-        width: calc(100% - 300px);
+        width: calc(100% - 200px);
         box-sizing: border-box;
         overflow: hide;
+        z-index: 1;
     }
 
     /* Responsive Adjustments */
@@ -238,6 +239,7 @@ const { title } = Astro.props;
             top: 100%;
             width: auto; /* Adjust width as needed */
             background: rgb(229, 229, 225);
+            z-index: 999;
         }
 
         .dropdown-menu li {
