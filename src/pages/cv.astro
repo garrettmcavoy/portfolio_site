@@ -21,8 +21,12 @@ import Layout from '../layouts/Layout.astro';
             <div class="entry">
                 <div class="experience">
                     <p>W.L. Gore & Associates - Mechanical Engineering Intern</p>
-                    <p class="tagline">Supported manufacturing of some <a href="https://www.goremedical.com/products/excluder">cool medical devices</a>.</p>
-                    <p class="skills">Mechanical&nbsp;Fixture&nbsp;Design • Line&nbsp;Optimization • Regulatory&nbsp;Constraints • Database&nbsp;Management • SLA&nbsp;3D&nbsp;Printing</p>
+                <div class="tagline">
+                    <p>Supported manufacturing of some <a href="https://www.goremedical.com/products/excluder">cool medical devices</a>.</p>
+                    </div>
+                <div class ="skills">
+                    <p>Mechanical&nbsp;Fixture&nbsp;Design • Line&nbsp;Optimization • Regulatory&nbsp;Constraints • Database&nbsp;Management • SLA&nbsp;3D&nbsp;Printing</p>
+                </div>
                 </div>
                 <div class="date-item">
                     <span class="date-text">3 months, June 2022 - September 2022</span>
@@ -121,35 +125,6 @@ import Layout from '../layouts/Layout.astro';
         margin-bottom: 1rem;
     }
 
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-
-        .cv-container {
-            width: 100%;
-            margin-left: 0rem;
-            margin-right: 0rem;
-        }
-
-        .entry {
-            flex-direction: column; /* Stack experience and date vertically */
-            align-items: flex-start;
-            gap: 0rem;
-        }
-
-        .experience {
-            flex: 2; /* Takes up more space */
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .experience p:first-child {
-            margin-bottom: 0.5rem;
-        }
-
-    }
-
-
     .skills {
         padding-left: 2rem;
         padding-bottom: 1rem;
@@ -166,5 +141,46 @@ import Layout from '../layouts/Layout.astro';
         padding-top: 0.5rem;
         font-size: 0.95em;
         line-height: 1.4;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+
+        .date-item {
+        }
+
+        .cv-container {
+            width: 100%;
+            margin-left: 0rem;
+            margin-right: 0rem;
+        }
+
+        .entry {
+            flex-direction: column; /* Stack experience and date vertically */
+            align-items: flex-start;
+            gap: 0rem;
+        }
+
+        .skills {
+            width: 100%;
+            padding-left: 1rem;
+        }
+
+        .tagline {
+            width: 100%;
+            padding-left: 1rem;
+        }
+
+        .experience {
+            flex: 2; /* Takes up more space */
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .experience p:first-child {
+            margin-bottom: 0.5rem;
+        }
+
     }
 </style>
