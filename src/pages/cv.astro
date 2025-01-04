@@ -3,184 +3,191 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Garrett McAvoy">
-    <div class="cv-container">
+  <div class="cv-container">
 
-        <!-- Work Section -->
-        <div class="section">
-            <p class="section-title"> Work Experience</p>
-            <div class="entry">
-                <div class="experience">
-                    <p>Apple - Manufacturing Design Engineer Intern</p>
-                    <p class="tagline">Made products better, safer, cheaper.</p>
-                    <p class="skills">Design&nbsp;of&nbsp;Experiments • Adhesives • Radiographic Inspection Design • Metrology • Production Design • FEA • Project Management</p>
-                </div>
-                <div class="date-item">
-                    <span class="date-text">1 year, April 2023 - March 2024</span>
-                </div>
-            </div>
-            <div class="entry">
-                <div class="experience">
-                    <p>W. L. Gore & Associates - Mechanical Engineering Intern</p>
-                <div class="tagline">
-                    <p>Supported manufacturing of some <a href="https://www.goremedical.com/products/excluder">cool medical devices</a>.</p>
-                    </div>
-                <div class ="skills">
-                    <p>Mechanical&nbsp;Fixture&nbsp;Design • Line&nbsp;Optimization • Regulatory&nbsp;Constraints • Database&nbsp;Management • SLA&nbsp;3D&nbsp;Printing</p>
-                </div>
-                </div>
-                <div class="date-item">
-                    <span class="date-text">3 months, June 2022 - September 2022</span>
-                </div>
-            </div>
-        </div>
+    <!-- Work Section -->
+    <div class="section">
+      <p class="section-title">Work Experience</p>
 
-        <!-- Projects Section -->
-        <div class="section">
-            <p class="section-title">Project Experience</p>
-            <div class="entry">
-                <div class="experience">
-                    <p>Edwards Lifesciences - MEDITEC Senior Project</p>
-                    <p class="tagline">Designing a medical device for use in minimally invasive surgeries.</p>
-                    <p class="skills">Mechanical System Design • DFM • FMEA • Functional Prototyping</p>
-                </div>
-                <div class="date-item">
-                    <span class="date-text">9 months, September 2024 - June 2025</span>
-                </div>
-            </div>
+      <!-- Apple Entry -->
+      <div class="entry">
+        <div class="experience">
+          <div class="entry-heading">
+            <p>Apple - Manufacturing Design Engineer Intern</p>
+            <span class="date-item">1 year, April 2023 - March 2024</span>
+          </div>
+          <p class="tagline">Made products better, safer, cheaper.</p>
+          <p class="skills">
+            Design&nbsp;of&nbsp;Experiments • Adhesives • Radiographic&nbsp;Inspection&nbsp;Design 
+            • Root&nbsp;Cause&nbsp;Analysis • Manufacturing&nbsp;Line&nbsp;Management • FEA 
+            • Project&nbsp;Management
+          </p>
         </div>
+      </div>
 
-        <!-- Education Section -->
-        <div class="section">
-            <p class="section-title">Education</p>
-            <div class="entry">
-                <div class="experience">
-                    <p>California Polytechnic State University, San&nbsp;Luis&nbsp;Obispo,&nbsp;CA</p>
-                    <p>Bachelor of Science, Mechanical Engineering</p>
-                    <p class="tagline">Coursework:</p>
-                    <p class="skills">Mechanics of Materials • Measurement & Data Analysis • Design for Strength & Stiffness • Mechanical Systems Design • Heat Transfer • Thermodynamics • Fluid Mechanics • Mechanical Vibrations • Applied
-                        Finite Element Analysis (<i>enrolled</i>) • Mechanical Controls (<i>enrolled</i>)</p>
-                </div>
-                <div class="date-item">
-                    <span class="date-text">Expected June 2025</span>
-                </div>
-            </div>
+      <!-- W. L. Gore Entry -->
+      <div class="entry">
+        <div class="experience">
+          <div class="entry-heading">
+            <p>W. L. Gore & Associates - Mechanical Engineering Intern</p>
+            <span class="date-item">3 months, June 2022 - September 2022</span>
+          </div>
+          <div class="tagline">
+            <p>
+              Supported manufacturing for 
+              <a 
+                href="https://www.goremedical.com/products/excluder" 
+                target="_blank" 
+                rel="noopener noreferrer">
+                cool medical devices
+              </a>.
+            </p>
+          </div>
+          <div class="skills">
+            <p>
+              Mechanical&nbsp;Fixture&nbsp;Design • Manufacturing&nbsp;Line&nbsp;Optimization 
+              • Regulatory&nbsp;Constraints • Database&nbsp;Management • SLA&nbsp;3D&nbsp;Printing
+            </p>
+          </div>
         </div>
+      </div>
     </div>
+
+    <!-- Project Section -->
+    <div class="section">
+      <p class="section-title">Project Experience</p>
+
+      <div class="entry">
+        <div class="experience">
+          <div class="entry-heading">
+            <p>Edwards Lifesciences - MEDITEC Senior Project</p>
+            <span class="date-item">9 months, September 2024 - June 2025</span>
+          </div>
+          <p class="tagline">
+            Designing a medical device for use in minimally invasive surgeries.
+          </p>
+          <p class="skills">
+            Mechanical&nbsp;System&nbsp;Design • DFM • FMEA • Functional&nbsp;Prototyping
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="section">
+      <p class="section-title">Education</p>
+
+      <div class="entry">
+        <div class="experience">
+          <div class="entry-heading">
+            <p>California Polytechnic State University, San&nbsp;Luis&nbsp;Obispo,&nbsp;CA</p>
+            <span class="date-item">Expected June 2025</span>
+          </div>
+          <p>Bachelor of Science, Mechanical Engineering</p>
+          <p class="tagline">Coursework:</p>
+          <p class="skills">
+            Mechanics&nbsp;of&nbsp;Materials • Measurement&nbsp;&&nbsp;Data&nbsp;Analysis 
+            • Design&nbsp;for&nbsp;Strength&nbsp;&&nbsp;Stiffness • Mechanical&nbsp;Systems&nbsp;Design
+            • Heat&nbsp;Transfer • Thermodynamics • Fluid&nbsp;Mechanics • Mechanical&nbsp;Vibrations
+            • Applied Finite&nbsp;Element&nbsp;Analysis (<i>enrolled</i>) 
+            • Mechanical&nbsp;Controls (<i>enrolled</i>)
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </Layout>
 
 <style>
-    /* General Container */
-    .cv-container {
-        display: flex;
-        padding: 0;
-        margin: 0 auto;
-        gap: 1rem;
-        width: 100%;
-        max-width: 100%;
-        flex-direction: column;
-        box-sizing: border-box;
-        margin-left: 50px;
+  /* General Container */
+  .cv-container {
+    /* Center the CV within its parent */
+    max-width: 80rem; 
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+
+    /* Give it some horizontal breathing room */
+    padding: 0 1rem;
+
+    /* We just want a vertical column of sections */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Section Container */
+  .section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0rem;
+  }
+
+  .section-title {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  /* Each "entry" is just a vertical block now */
+  .entry {
+    display: block;
+    margin-bottom: 1.5rem; /* space between entries */
+    width: 100%;
+  }
+
+  /* Headline + Date in one row */
+  .entry-heading {
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    margin-bottom: 0.5rem; /* spacing below heading */
+  }
+
+  .entry-heading p {
+    margin: 0;
+  }
+
+  .date-item {
+    font-style: italic;
+    white-space: nowrap; /* so date doesn't break mid-line */
+  }
+
+  .experience p {
+    margin: 0;
+  }
+
+  /* Additional text styling */
+  .tagline {
+    padding-left: 2rem;
+    padding-bottom: 0rem;
+    padding-top: 0.5rem;
+    font-size: 0.9em;
+    line-height: 1.4;
+  }
+
+  .skills {
+    padding-left: 2rem;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    padding-right: 2rem;
+    font-size: 0.9em;
+    line-height: 1.4;
+    max-width: 60rem;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .entry-heading {
+      /* Stack title & date vertically on small screens */
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
     }
 
-    /* Section Container */
-    .section {
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 0rem;
+    .tagline, .skills {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
     }
-
-    .section-title {
-        font-weight: bold;
-        padding: 0;
-        margin-bottom: 1rem;
-
-    }
-
-    /* Individual Entry (Experience + Date) */
-    .entry {
-        display: flex;
-        justify-content: space-between; /* Experience and Date side by side */
-        align-items: flex-start;
-        width: 100%;
-        gap: 1rem;
-    }
-
-    .experience {
-        flex: 2; /* Takes up more space */
-        max-width: 700px;
-    }
-
-    .experience p {
-        margin: 0;
-    }
-
-    .date-item {
-        flex: 1; /* Takes up less space */
-        display: flex;
-        justify-content: flex-start; /* Align dates to the left */
-        align-items: center;
-        font-style: italic;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    .skills {
-        padding-left: 2rem;
-        padding-bottom: 1rem;
-        padding-top: 0.5rem;
-        padding-right: 4rem;
-        font-size: 0.95em;
-        line-height: 1.4;
-        margin-right: 1rem;
-    }
-
-    .tagline {
-        padding-left: 2rem;
-        padding-bottom: 0rem;
-        padding-top: 0.5rem;
-        font-size: 0.95em;
-        line-height: 1.4;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-
-        .date-item {
-        }
-
-        .cv-container {
-            width: 100%;
-            margin-left: 1rem;
-            margin-right: 0rem;
-        }
-
-        .entry {
-            flex-direction: column; /* Stack experience and date vertically */
-            align-items: flex-start;
-            gap: 0rem;
-        }
-
-        .skills {
-            width: 100%;
-            padding-left: 1.5rem;
-        }
-
-        .tagline {
-            width: 100%;
-            padding-left: 1.5rem;
-        }
-
-        .experience {
-            flex: 2; /* Takes up more space */
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .experience p:first-child {
-            margin-bottom: 0.5rem;
-        }
-
-    }
+  }
 </style>
