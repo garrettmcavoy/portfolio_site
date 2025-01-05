@@ -16,7 +16,7 @@ import Layout from '../layouts/Layout.astro';
             <p>Apple - Manufacturing Design Engineer Intern</p>
             <span class="date-item">1 year, April 2023 - March 2024</span>
           </div>
-          <p class="tagline">Made products better, safer, cheaper.</p>
+          <p class="tagline">Made products safer, cheaper, prettier.</p>
           <p class="skills">
             Design&nbsp;of&nbsp;Experiments • Adhesives • Radiographic&nbsp;Inspection&nbsp;Design 
             • Root&nbsp;Cause&nbsp;Analysis • Manufacturing&nbsp;Line&nbsp;Management • FEA 
@@ -102,12 +102,12 @@ import Layout from '../layouts/Layout.astro';
     box-sizing: border-box;
 
     /* Give it some horizontal breathing room */
-    padding: 0 .5rem;
+    padding: 0 2rem;
 
     /* We just want a vertical column of sections */
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0rem;
   }
 
   /* Section Container */
@@ -166,7 +166,7 @@ import Layout from '../layouts/Layout.astro';
     padding-right: 2rem;
     font-size: 0.9em;
     line-height: 1.4;
-    max-width: 60rem;
+    max-width: 75%;
   }
 
   /* Responsive Adjustments */
@@ -180,6 +180,8 @@ import Layout from '../layouts/Layout.astro';
 
     .tagline, .skills {
       padding-left: 1.5rem;
+      max-width: 100%;
+      padding-right: 0rem;
     }
   }
 </style>

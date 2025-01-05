@@ -9,6 +9,9 @@ const { title } = Astro.props;
 <!doctype html>
 <html lang="en">
     <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
@@ -22,7 +25,7 @@ const { title } = Astro.props;
                 </div>
                 <nav>
                     <ul>
-                        <li><a href={`/about`}>About</a></li>
+                        <li><a href={`/`}>Home</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle">Portfolio</a>
                             <ul class="dropdown-menu">
@@ -92,7 +95,8 @@ const { title } = Astro.props;
 
     /* General Styles */
     html {
-        font-family: "Garamond", serif;
+        font-family: "EB Garamond", serif; /* Apply globally */
+        font-optical-sizing: auto;
         background: rgb(229, 229, 225);
         font-size: 1.1rem;
         color: black;
