@@ -10,62 +10,99 @@ import Layout from '../layouts/Layout.astro';
       <!-- 2024 Section -->
       <div class="year-section">
         <p class="year-title">2024</p>
-        <div class="image-wrapper">
-          <a href="/turbineshaft">
+        <!-- New scroll container -->
+        <div class="engineer-scroll">
+          <div class="image-wrapper">
+            <a href="/turbineshaft">
+              <img
+                src="/images/turbineshaft/thumbnail.png"
+                alt="Turbine Shaft Design"
+                class="image"
+              />
+            </a>
+            <p class="image-caption">
+              <a href="/turbineshaft">Turbine Shaft Design</a>
+            </p>
+          </div>
+          <div class="image-wrapper">
             <img
-              src="/images/turbineshaft/thumbnail.png"
-              alt="Turbine Shaft Design"
+              src="/images/airpodsdock/thumbnail.png"
+              alt="Airpods Max Dock"
               class="image"
             />
-          </a>
-          <p class="image-caption">
-            <a href="/turbineshaft">Turbine Shaft Design</a>
-          </p>
+            <p class="image-caption">
+              Airpods Max Dock [WIP]
+            </p>
+          </div>
+          <div class="image-wrapper">
+            <img
+              src="/images/airpodsdock/thumbnail.png"
+              alt="Airpods Max Dock"
+              class="image"
+            />
+            <p class="image-caption">
+              Airpods Max Dock [WIP]
+            </p>
+          </div>
         </div>
       </div>
 
       <!-- 2022 Section -->
       <div class="year-section">
         <p class="year-title">2022</p>
-        <div class="image-wrapper">
-          <a href="/biketrailer">
-            <img
-              src="/images/bike_trailer/thumbnail.jpeg"
-              alt="Bike Trailer"
-              class="image"
-            />
-          </a>
-          <p class="image-caption">
-            <a href="/biketrailer">Bike Trailer</a>
-          </p>
+        <!-- New scroll container -->
+        <div class="engineer-scroll">
+          <div class="image-wrapper">
+            <a href="/biketrailer">
+              <img
+                src="/images/bike_trailer/thumbnail.jpeg"
+                alt="Bike Trailer"
+                class="image"
+              />
+            </a>
+            <p class="image-caption">
+              <a href="/biketrailer">Bike Trailer</a>
+            </p>
+          </div>
         </div>
       </div>
 
       <!-- 2020 Section -->
       <div class="year-section">
         <p class="year-title">2020</p>
-        <div class="image-wrapper">
-          <a href="/SFF">
-            <img
-              src="/images/sff_PC/thumbnail.png"
-              alt="Small Form Factor PC"
-              class="image"
-            />
-          </a>
-          <p class="image-caption">
-            <a href="/SFF">Small Form Factor PC</a>
-          </p>
+        <!-- New scroll container -->
+        <div class="engineer-scroll">
+          <div class="image-wrapper">
+            <a href="/SFF">
+              <img
+                src="/images/sff_PC/thumbnail.png"
+                alt="Small Form Factor PC"
+                class="image"
+              />
+            </a>
+            <p class="image-caption">
+              <a href="/SFF">Small Form Factor PC</a>
+            </p>
+          </div>
         </div>
       </div>
 
       <!-- 2018 Section -->
       <div class="year-section">
         <p class="year-title">2018</p>
+        <!-- Scroll container (even if empty now, you can keep for consistency) -->
+        <div class="engineer-scroll">
+          <!-- No images yet for 2018? -->
+        </div>
       </div>
 
       <!-- 2017 Section -->
       <div class="year-section">
         <p class="year-title">2017</p>
+        <!-- Scroll container (even if empty now, you can keep for consistency) -->
+        <div class="engineer-scroll">
+          <!-- No images yet for 2017? -->
+        </div>
       </div>
     </div>
     <!-- Engineering content ends here -->
@@ -73,28 +110,30 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-  /* 
-    1) Keep .engineering-container and .year-section 
-       as normal block elements (not flex) so they’re left-aligned.
-    2) Use .image-wrapper { display: inline-block; text-align: center; } 
-       so only the caption is centered relative to its image.
-  */
-
+  /* Container for entire CV */
   .cv-container {
     width: 100%;
-    margin: 0;        
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
+  /* Main engineering container */
   .engineering-container {
     max-width: 100%;
-    overflow: hidden;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
+  /* Each year section */
   .year-section {
-    margin-bottom: 1rem; 
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .year-title {
@@ -104,13 +143,29 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .year-section:last-of-type {
-    margin-bottom: 5rem;
+    margin-bottom: 5rem; /* Adjust value as needed */
   }
 
+  /* Horizontal scroll container (similar to .photo-scroll) */
+  .engineer-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+
+    /* Hide scrollbar - Firefox, IE/Edge, and WebKit-based browsers */
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE and Edge */
+  }
+  .engineer-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Image wrapper & styling */
   .image-wrapper {
-    display: inline-block;  /* Keeps each image in normal “flow” */
-    text-align: center;     /* Centers the caption under the image */
-    margin-top: 1rem;
+    text-align: center;     /* Keeps the caption centered under each image */
+    scroll-snap-align: center;
   }
 
   .image {
