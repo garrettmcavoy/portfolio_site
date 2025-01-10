@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Garrett McAvoy">
+  <div class="simple-page-container">
+    <div class="title">
+        <p>IME 141, 142 & 143 - Manufacturing Projects</p>
+    </div>
+    <!-- Text Content -->
+    <div class="text-content">
+      <p>Four selected projects from hands-on manufacturing courses at Cal Poly. Courses included IME 141 Net Shape, IME 142 Materials Joining, and IME 143 Material Removal. Projects in clockwise order:</p>
+    </div>
+
+    <div class="text-numbered">
+        <p>1. Drake Medallion: Investment casting (Lost wax)</p>
+        <p>2. Mustang: Sand casting</p>
+        <p>3. Screw driver with bit storage: Turning • Facing • Knurling • Tapping • CNC Mill</p>
+        <p>4. Doohickey: CNC Mill</p>
+    </div>
+
+    <!-- Placeholder Images -->
+    <div class="images">
+        <img src="../images/IME/ime.png" alt="IME" />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .simple-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top;
+    text-align: left;
+    padding-bottom: 2rem;
+  }
+
+  .text-content {
+    text-indent: 2em; /* Adjust as needed (e.g., 1em, 2rem, 20px) */
+    max-width: 900px;
+    padding-right: 200px;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .text-numbered {
+    max-width: 900px;
+    padding-right: 200px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .images {
+    display: flex;
+    padding-right: 200px;
+    max-width: 800px;
+    flex-direction: column; /* Stack images vertically */
+    gap: 1rem; /* Add spacing between images */
+  }
+
+  .images img {
+    display: block; /* Ensure images take up only their content's size */
+    max-width: 100%; /* Prevent images from exceeding container width */
+    height: auto; /* Maintain original aspect ratio */
+    border: none; /* Remove any borders */
+  }
+
+  .title {
+        font-size: 1rem;
+        font-weight: bold;
+        align-self: flex-start; /* Align title to the left */
+        margin: 0; /* Ensure no margin */
+        padding-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .text-content {
+            padding-right: 0px;
+        }
+        .images {
+            padding-right: 0px;
+        }
+        .simple-page-container {
+  }
+        .text-numbered {
+            padding-right: 0px;
+        }
+    }
+</style>
