@@ -3,25 +3,139 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Garrett McAvoy">
-    <div class = "engineering-content">
-        <p class = "years">2024</p>
+  <div class="cv-container">
+    <!-- Engineering content starts here -->
+    <div class="engineering-container">
+      <div class="year-section">
+        <p class="year-title">2024</p>
+      </div>
+
+      <div class="year-section">
+        <p class="year-title">2023</p>
+      </div>
+
+      <div class="year-section">
+        <p class="year-title">2022</p>
+        <!-- The image + caption -->
+        <div class="image-wrapper">
+          <a href="/biketrailer">
+            <img
+              src="/images/bike_trailer/thumbnail.jpeg"
+              alt="Bike Trailer"
+              class="image"
+            />
+          </a>
+          <p class="image-caption"><a href="/biketrailer">Bike Trailer</a></p>
+        </div>
+      </div>
+
+      <div class="year-section">
+        <p class="year-title">2020</p>
+        <div class="image-wrapper">
+            <a href="/SFF">
+              <img
+                src="/images/sff_PC/thumbnail.png"
+                alt="Small Form Factor PC"
+                class="image"
+              />
+            </a>
+            <p class="image-caption"><a href="/SFF">Small Form Factor PC</a></p>
+          </div>
+      </div>
+
+      <div class="year-section">
+        <p class="year-title">2018</p>
+      </div>
+
+      <div class="year-section">
+        <p class="year-title">2017</p>
+      </div>
     </div>
+    <!-- Engineering content ends here -->
+  </div>
 </Layout>
+
 <style>
-    .engineering-content {
-        position: absolute;
-        top: 2.5rem;
-        left: 20rem;
-        padding: 0rem;
-    }
+  /* 
+    1) Remove flex from .engineering-container and .year-section 
+       so they behave as normal block elements (which are left-aligned by default).
+    2) Use .image-wrapper { display: inline-block; text-align: center; } to 
+       center the caption below the image without centering the entire container.
+  */
 
-    .engineering-content p {
-        margin-top: 0;
-        margin-bottom: 0rem;
-    }
+  .cv-container {
+    /* If your main layout’s .main-content is centering everything,
+       you can override that here by ensuring the container spans 100% 
+       and does not align itself to the center. */
+    width: 100%;
+    margin: 0;        /* remove auto-centering margin */
+    padding: 0;
+    box-sizing: border-box;
+    /* Don’t use display: flex if you don’t need it to be a flex container. */
+    /* If other pages rely on .cv-container being flex, we can leave it, 
+       but do not center the items within it. */
+  }
 
-    .years {
-        font-size: 1.5rem;
-        font-weight: bold;
+  .engineering-container {
+    /* Remove flex so it does NOT center contents */
+    max-width: 100%;
+    overflow: hidden;
+    /* No display: flex here */
+    /* No flex-direction, no gap */
+    padding: 0; /* optional horizontal padding */
+  }
+
+  /* Each year section is also left-aligned by default now. */
+  .year-section {
+    /* Remove flex if you don’t need it here either */
+    margin-bottom: 1rem; 
+  }
+
+  .year-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0rem;
+  }
+
+  .year-section:last-of-type {
+    margin-bottom: 5rem;
+  }
+
+  /* IMAGE + CAPTION WRAPPER */
+  .image-wrapper {
+    display: inline-block; /* Sits in the normal left-aligned flow */
+    text-align: center;    /* Just centers the caption under the image */
+    margin-top: 1rem;
+  }
+
+  .image {
+    max-width: 300px;
+    height: auto;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    transition: border 0.2s ease-in-out;
+  }
+  
+
+  /* Hover effect for a black border around the image */
+  .image:hover {
+    border: 1.5px solid black;
+  }
+
+  /* Caption is centered relative to the image, not the whole page */
+  .image-caption {
+    margin-top: 0.5rem;
+    font-style: italic;
+    text-align: center;
+  }
+
+  .image-caption a {
+    color: black;
+  }
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .image {
+      max-width: 200px;
     }
+  }
 </style>
