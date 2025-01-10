@@ -6,17 +6,27 @@ import Layout from '../layouts/Layout.astro';
   <div class="cv-container">
     <!-- Engineering content starts here -->
     <div class="engineering-container">
+
+      <!-- 2024 Section -->
       <div class="year-section">
         <p class="year-title">2024</p>
+        <div class="image-wrapper">
+          <a href="/turbineshaft">
+            <img
+              src="/images/turbineshaft/thumbnail.png"
+              alt="Turbine Shaft Design"
+              class="image"
+            />
+          </a>
+          <p class="image-caption">
+            <a href="/turbineshaft">Turbine Shaft Design</a>
+          </p>
+        </div>
       </div>
 
-      <div class="year-section">
-        <p class="year-title">2023</p>
-      </div>
-
+      <!-- 2022 Section -->
       <div class="year-section">
         <p class="year-title">2022</p>
-        <!-- The image + caption -->
         <div class="image-wrapper">
           <a href="/biketrailer">
             <img
@@ -25,28 +35,35 @@ import Layout from '../layouts/Layout.astro';
               class="image"
             />
           </a>
-          <p class="image-caption"><a href="/biketrailer">Bike Trailer</a></p>
+          <p class="image-caption">
+            <a href="/biketrailer">Bike Trailer</a>
+          </p>
         </div>
       </div>
 
+      <!-- 2020 Section -->
       <div class="year-section">
         <p class="year-title">2020</p>
         <div class="image-wrapper">
-            <a href="/SFF">
-              <img
-                src="/images/sff_PC/thumbnail.png"
-                alt="Small Form Factor PC"
-                class="image"
-              />
-            </a>
-            <p class="image-caption"><a href="/SFF">Small Form Factor PC</a></p>
-          </div>
+          <a href="/SFF">
+            <img
+              src="/images/sff_PC/thumbnail.png"
+              alt="Small Form Factor PC"
+              class="image"
+            />
+          </a>
+          <p class="image-caption">
+            <a href="/SFF">Small Form Factor PC</a>
+          </p>
+        </div>
       </div>
 
+      <!-- 2018 Section -->
       <div class="year-section">
         <p class="year-title">2018</p>
       </div>
 
+      <!-- 2017 Section -->
       <div class="year-section">
         <p class="year-title">2017</p>
       </div>
@@ -57,37 +74,26 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   /* 
-    1) Remove flex from .engineering-container and .year-section 
-       so they behave as normal block elements (which are left-aligned by default).
-    2) Use .image-wrapper { display: inline-block; text-align: center; } to 
-       center the caption below the image without centering the entire container.
+    1) Keep .engineering-container and .year-section 
+       as normal block elements (not flex) so they’re left-aligned.
+    2) Use .image-wrapper { display: inline-block; text-align: center; } 
+       so only the caption is centered relative to its image.
   */
 
   .cv-container {
-    /* If your main layout’s .main-content is centering everything,
-       you can override that here by ensuring the container spans 100% 
-       and does not align itself to the center. */
     width: 100%;
-    margin: 0;        /* remove auto-centering margin */
+    margin: 0;        
     padding: 0;
     box-sizing: border-box;
-    /* Don’t use display: flex if you don’t need it to be a flex container. */
-    /* If other pages rely on .cv-container being flex, we can leave it, 
-       but do not center the items within it. */
   }
 
   .engineering-container {
-    /* Remove flex so it does NOT center contents */
     max-width: 100%;
     overflow: hidden;
-    /* No display: flex here */
-    /* No flex-direction, no gap */
-    padding: 0; /* optional horizontal padding */
+    padding: 0;
   }
 
-  /* Each year section is also left-aligned by default now. */
   .year-section {
-    /* Remove flex if you don’t need it here either */
     margin-bottom: 1rem; 
   }
 
@@ -101,10 +107,9 @@ import Layout from '../layouts/Layout.astro';
     margin-bottom: 5rem;
   }
 
-  /* IMAGE + CAPTION WRAPPER */
   .image-wrapper {
-    display: inline-block; /* Sits in the normal left-aligned flow */
-    text-align: center;    /* Just centers the caption under the image */
+    display: inline-block;  /* Keeps each image in normal “flow” */
+    text-align: center;     /* Centers the caption under the image */
     margin-top: 1rem;
   }
 
@@ -115,14 +120,11 @@ import Layout from '../layouts/Layout.astro';
     border-radius: 12px;
     transition: border 0.2s ease-in-out;
   }
-  
 
-  /* Hover effect for a black border around the image */
   .image:hover {
     border: 1.5px solid black;
   }
 
-  /* Caption is centered relative to the image, not the whole page */
   .image-caption {
     margin-top: 0.5rem;
     font-style: italic;
@@ -132,7 +134,7 @@ import Layout from '../layouts/Layout.astro';
   .image-caption a {
     color: black;
   }
-  /* Responsive Adjustments */
+
   @media (max-width: 768px) {
     .image {
       max-width: 200px;
