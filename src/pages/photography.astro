@@ -68,7 +68,118 @@ import Layout from '../layouts/Layout.astro';
         </div>
         <!-- Photography content ends here -->
     </div>
+    <!-- Overlay element lives in markup so scoped styles apply -->
+    <div class="lightbox-overlay" id="photo-overlay"></div>
 </Layout>
+
+<script is:client>
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.photo-scroll img');
+    let activeClone = null;
+    let activeOriginal = null;
+    let isOpen = false;
+    // Soft-focus perimeter only; no page cloning or backdrop filters
+
+    // Use the in-markup overlay so styles apply
+    const overlay = document.getElementById('photo-overlay');
+
+    function closeLightbox() {
+      if (!activeClone || !activeOriginal) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+        isOpen = false;
+        images.forEach((im) => (im.style.pointerEvents = ''));
+        // nothing else to clean up
+        return;
+      }
+
+      const rect = activeOriginal.getBoundingClientRect();
+      overlay.classList.remove('open');
+
+      // Animate clone back to original position
+      activeClone.style.left = rect.left + 'px';
+      activeClone.style.top = rect.top + 'px';
+      activeClone.style.width = rect.width + 'px';
+      activeClone.style.height = rect.height + 'px';
+      activeClone.style.borderRadius = getComputedStyle(activeOriginal).borderRadius || '0px';
+
+      activeClone.addEventListener('transitionend', () => {
+        if (activeClone && activeClone.parentNode) {
+          activeClone.parentNode.removeChild(activeClone);
+        }
+        activeClone = null;
+        activeOriginal = null;
+        document.body.style.overflow = '';
+        isOpen = false;
+        images.forEach((im) => (im.style.pointerEvents = ''));
+        // nothing else to clean up
+      }, { once: true });
+    }
+
+    overlay.addEventListener('click', closeLightbox);
+    // Fallback: close on any click outside the active image
+    document.addEventListener('click', (e) => {
+      if (activeClone && overlay.classList.contains('open') && !activeClone.contains(e.target)) {
+        closeLightbox();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    images.forEach((img) => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => {
+        if (isOpen) return;
+        activeOriginal = img;
+        const rect = img.getBoundingClientRect();
+
+        // Create animated clone
+        activeClone = img.cloneNode();
+        activeClone.style.position = 'fixed';
+        activeClone.style.left = rect.left + 'px';
+        activeClone.style.top = rect.top + 'px';
+        activeClone.style.width = rect.width + 'px';
+        activeClone.style.height = rect.height + 'px';
+        activeClone.style.objectFit = 'contain';
+        activeClone.style.zIndex = '10003';
+        activeClone.style.transition = 'left 250ms ease, top 250ms ease, width 250ms ease, height 250ms ease, border-radius 250ms ease';
+        activeClone.style.borderRadius = '12px';
+        activeClone.style.cursor = 'zoom-out';
+        document.body.appendChild(activeClone);
+        activeClone.addEventListener('click', closeLightbox);
+
+        // Compute target size to fit viewport
+        const naturalW = img.naturalWidth || rect.width;
+        const naturalH = img.naturalHeight || rect.height;
+        const maxW = window.innerWidth * 0.9;
+        const maxH = window.innerHeight * 0.9;
+        const ratio = naturalW / naturalH;
+        let targetW = maxW;
+        let targetH = targetW / ratio;
+        if (targetH > maxH) {
+          targetH = maxH;
+          targetW = targetH * ratio;
+        }
+        const targetLeft = (window.innerWidth - targetW) / 2;
+        const targetTop = (window.innerHeight - targetH) / 2;
+
+        requestAnimationFrame(() => {
+          overlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          isOpen = true;
+          images.forEach((im) => (im.style.pointerEvents = 'none'));
+          activeClone.style.borderRadius = '0px';
+          activeClone.style.left = targetLeft + 'px';
+          activeClone.style.top = targetTop + 'px';
+          activeClone.style.width = targetW + 'px';
+          activeClone.style.height = targetH + 'px';
+          // No filter needed
+        });
+      });
+    });
+  });
+</script>
 
 <style>
     /* Use the same styles as in your CV page */
@@ -147,4 +258,25 @@ import Layout from '../layouts/Layout.astro';
             margin-right:0rem;
         }
     }
+
+    /* Lightbox overlay with uniform blur */
+    .lightbox-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        opacity: 0;
+        transition: opacity 200ms ease;
+        will-change: opacity;
+        z-index: 10001;
+        pointer-events: none;
+    }
+
+    .lightbox-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* No extra blur layers needed now */
 </style>

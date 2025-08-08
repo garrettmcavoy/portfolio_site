@@ -30,7 +30,6 @@ const { title } = Astro.props;
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle">Portfolio</a>
                             <ul class="dropdown-menu">
-                                <li><a href={`/engineering`}>Engineering</a></li>
                                 <li><a href={`/photography`}>Photography</a></li>
                                 <li><a href={`/other`}>Other</a></li>
                             </ul>
@@ -160,12 +159,37 @@ const { title } = Astro.props;
         text-decoration: none;
         color: #000000;
         display: block;
-        padding: 0rem 0rem;
-        transition: background 0.3s;
+        padding: 0rem 0.4rem;
+        border-radius: 8px;
+        position: relative;
+        z-index: 0;
+        transition: background-color 0.2s ease;
     }
 
-    nav ul li a:hover {
-        background-color: #34495e00;
+    /* Pseudo-element to render hover background without changing layout */
+    nav ul li a::before {
+        content: "";
+        position: absolute;
+        inset: 0; /* matches link box by default */
+        border-radius: 8px;
+        background-color: transparent;
+        z-index: -1; /* behind text */
+        transition: background-color 0.2s ease, inset 0.2s ease;
+    }
+
+    nav ul li a:hover::before {
+        background-color: rgb(214, 214, 210);
+        inset: -0.25rem -0.35rem; /* visually taller & slightly wider */
+    }
+
+    /* Ensure dropdown items also get rounded hover boxes matching top-level size */
+    .dropdown-menu li a::before {
+        border-radius: 8px;
+    }
+
+    .dropdown-menu li a:hover::before {
+        inset: -0.25rem -0.35rem;
+        border-radius: 8px;
     }
 
     /* Dropdown Styles */
@@ -182,6 +206,7 @@ const { title } = Astro.props;
 
     .dropdown-menu.open {
         height: auto;
+        overflow: visible; /* allow hover background to extend */
         border-bottom: 1px solid black;
     }
 
@@ -227,6 +252,7 @@ const { title } = Astro.props;
             flex-direction: row;
             margin: 0;
             padding: 0;
+            gap: 0.5rem; /* increase spacing between items in horizontal navbar */
         }
 
         nav > ul > li {
@@ -247,6 +273,12 @@ const { title } = Astro.props;
             width: 140%; /* Adjust width as needed */
             background: rgb(229, 229, 225);
             z-index: 999;
+            overflow: hidden; /* clip contents so they are revealed by height animation */
+        }
+
+        /* Ensure reveal effect during height animation on mobile */
+        .dropdown-menu.open {
+            overflow: hidden; /* keep clipping while expanding */
         }
 
         .dropdown-menu li {
@@ -258,6 +290,11 @@ const { title } = Astro.props;
             padding-top: 0rem;
             background: rgb(229, 229, 225);
             display: block; /* Ensure links are block elements */
+        }
+
+        /* On mobile, keep hover background inside container to avoid clipping */
+        .dropdown-menu li a:hover::before {
+            inset: 0; /* do not extend outside during mobile reveal */
         }
 
         .main-content {
