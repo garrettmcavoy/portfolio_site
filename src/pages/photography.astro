@@ -149,34 +149,20 @@ import Layout from '../layouts/Layout.astro';
         document.body.appendChild(activeClone);
         activeClone.addEventListener('click', closeLightbox);
 
-        // Helper to get visual viewport size (fixes iOS Safari bottom bar gap)
-        function getViewportSize() {
-          const vv = window.visualViewport;
-          return {
-            w: vv ? vv.width : window.innerWidth,
-            h: vv ? vv.height : window.innerHeight,
-          };
-        }
-
-        function computeTargetRect(nW, nH) {
-          const { w, h } = getViewportSize();
-          const maxW = w * 0.9;
-          const maxH = h * 0.9;
-          const ratio = nW / nH;
-          let targetW = maxW;
-          let targetH = targetW / ratio;
-          if (targetH > maxH) {
-            targetH = maxH;
-            targetW = targetH * ratio;
-          }
-          const targetLeft = (w - targetW) / 2;
-          const targetTop = (h - targetH) / 2;
-          return { targetW, targetH, targetLeft, targetTop };
-        }
-
+        // Compute target size to fit viewport
         const naturalW = img.naturalWidth || rect.width;
         const naturalH = img.naturalHeight || rect.height;
-        let { targetW, targetH, targetLeft, targetTop } = computeTargetRect(naturalW, naturalH);
+        const maxW = window.innerWidth * 0.9;
+        const maxH = window.innerHeight * 0.9;
+        const ratio = naturalW / naturalH;
+        let targetW = maxW;
+        let targetH = targetW / ratio;
+        if (targetH > maxH) {
+          targetH = maxH;
+          targetW = targetH * ratio;
+        }
+        const targetLeft = (window.innerWidth - targetW) / 2;
+        const targetTop = (window.innerHeight - targetH) / 2;
 
         requestAnimationFrame(() => {
           overlay.classList.add('open');
@@ -190,28 +176,6 @@ import Layout from '../layouts/Layout.astro';
           activeClone.style.height = targetH + 'px';
           // No filter needed
         });
-
-        // Recenter on viewport changes (iOS Safari address bar)
-        function recenter() {
-          if (!activeClone) return;
-          const tr = computeTargetRect(naturalW, naturalH);
-          activeClone.style.left = tr.targetLeft + 'px';
-          activeClone.style.top = tr.targetTop + 'px';
-          activeClone.style.width = tr.targetW + 'px';
-          activeClone.style.height = tr.targetH + 'px';
-        }
-        const vv = window.visualViewport;
-        if (vv) {
-          vv.addEventListener('resize', recenter);
-          vv.addEventListener('scroll', recenter);
-          // Clean up when closing
-          activeClone.addEventListener('transitionend', () => {
-            vv.removeEventListener('resize', recenter);
-            vv.removeEventListener('scroll', recenter);
-          }, { once: true });
-        } else {
-          window.addEventListener('resize', recenter, { once: true });
-        }
       });
     });
   });
@@ -298,18 +262,7 @@ import Layout from '../layouts/Layout.astro';
     /* Lightbox overlay with uniform blur */
     .lightbox-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        /* Use dynamic viewport units so the overlay covers behind Safari's bottom toolbar */
-        height: 100vh; /* fallback */
-    }
-    @supports (height: 100dvh) {
-      .lightbox-overlay {
-        height: 100dvh;
-      }
-    }
-    .lightbox-overlay {
+        inset: 0;
         background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
@@ -318,8 +271,11 @@ import Layout from '../layouts/Layout.astro';
         will-change: opacity;
         z-index: 10001;
         pointer-events: none;
-        /* Ensure safe-area coverage on iOS */
-        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .lightbox-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
     }
 
     /* No extra blur layers needed now */
