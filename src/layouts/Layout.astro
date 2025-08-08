@@ -59,15 +59,22 @@ const { title } = Astro.props;
                         if (dropdownMenu.classList.contains("open")) {
                             dropdownMenu.style.height = "0px";
                             dropdownMenu.classList.remove("open");
+                            dropdownMenu.classList.remove("animation-complete");
                         } else {
                             dropdownMenu.style.height = `${dropdownMenu.scrollHeight}px`;
                             dropdownMenu.classList.add("open");
+                            
+                            // Add animation-complete class after animation finishes
+                            setTimeout(() => {
+                                dropdownMenu.classList.add("animation-complete");
+                            }, 300); // Match CSS transition duration
                         }
 
                         document.querySelectorAll(".dropdown-menu").forEach(menu => {
                             if (menu !== dropdownMenu) {
                                 menu.style.height = "0px";
                                 menu.classList.remove("open");
+                                menu.classList.remove("animation-complete");
                             }
                         });
                     });
@@ -77,6 +84,7 @@ const { title } = Astro.props;
                             const dropdownMenu = toggle.nextElementSibling;
                             dropdownMenu.style.height = "0px";
                             dropdownMenu.classList.remove("open");
+                            dropdownMenu.classList.remove("animation-complete");
                         }
                     });
                 });
@@ -185,10 +193,11 @@ const { title } = Astro.props;
     /* Ensure dropdown items also get rounded hover boxes matching top-level size */
     .dropdown-menu li a::before {
         border-radius: 8px;
+        inset: 0;
     }
 
     .dropdown-menu li a:hover::before {
-        inset: -0.25rem -0.35rem;
+        inset: 0;
         border-radius: 8px;
     }
 
@@ -206,14 +215,20 @@ const { title } = Astro.props;
 
     .dropdown-menu.open {
         height: auto;
-        overflow: visible; /* allow hover background to extend */
+        overflow: hidden; /* keep hidden during animation to prevent text clipping */
         border-bottom: 1px solid black;
+    }
+
+
+    .dropdown-menu li {
+        margin: .7rem 0; /* Reduce margin for dropdown items */
     }
 
     .dropdown-menu li a {
         color: #000000;
         padding-left: 1rem;
     }
+
 
     /* Main Content Styles */
     .main-content {
@@ -269,7 +284,7 @@ const { title } = Astro.props;
         .dropdown-menu {
             display: block; /* Ensure it's displayed as a block element */
             position: absolute;
-            top: 100%;
+            top: calc(100% + 0.3rem); /* Move dropdown down to create gap */
             width: 140%; /* Adjust width as needed */
             background: rgb(229, 229, 225);
             z-index: 999;
