@@ -116,6 +116,39 @@ test('home fills the window and keeps white navigation during resizing', async (
   await expect(page.locator('.site-title a')).toHaveCSS('color', 'rgb(0, 0, 0)');
 });
 
+test('iPhone artwork covers the screen when Safari excludes browser chrome', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({
+    baseURL,
+    viewport: { width: 402, height: 714 },
+    screen: { width: 402, height: 874 },
+    isMobile: true,
+    hasTouch: true,
+    deviceScaleFactor: 2,
+    reducedMotion: 'reduce',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1',
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/');
+    const tank = page.locator('[data-aquarium]');
+    await expect(tank).toHaveAttribute('data-ready', '');
+    await expect.poll(() => tank.evaluate(element => {
+      const rect = element.getBoundingClientRect();
+      const canvas = element.querySelector('canvas')!;
+      return { width: rect.width, height: rect.height, canvasHeight: canvas.height };
+    })).toEqual({ width: 402, height: 874, canvasHeight: 1311 });
+    const controls = await page.locator('.aquarium-controls').boundingBox();
+    expect(controls!.y).toBeLessThan(20);
+    expect(controls!.y + controls!.height).toBeLessThan(714);
+    await expect(page.getByRole('link', { name: 'Home', exact: true })).toBeVisible();
+    // The screen sizing is home-only; content pages retain their own height.
+    await page.goto('/photography/');
+    expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--aquarium-screen-height'))).toBe('');
+  } finally {
+    await context.close();
+  }
+});
+
 test('top-right icons replace old controls and background choices persist', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');

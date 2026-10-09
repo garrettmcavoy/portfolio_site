@@ -31,6 +31,31 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         }
       } catch { /* Optional storage; keep the default reef color. */ }
     </script>}
+    {immersive && <script is:inline>
+      // Some iPhone Safari layouts report zero safe areas and a 100lvh that
+      // stops inside the toolbar. Size the artwork from the screen instead.
+      // Restrict this to phones: an iPad window can occupy part of its screen.
+      if (/iPhone|iPod/.test(navigator.userAgent)) {
+        const updateAquariumScreen = () => {
+          const landscape = matchMedia('(orientation: landscape)').matches;
+          const shortSide = Math.min(screen.width, screen.height);
+          const longSide = Math.max(screen.width, screen.height);
+          const screenWidth = landscape ? longSide : shortSide;
+          const screenHeight = landscape ? shortSide : longSide;
+          // Browser page zoom changes CSS pixels; pinch zoom doesn't change
+          // the layout viewport and should not resize the aquarium.
+          const layoutWidth = document.documentElement.clientWidth || innerWidth;
+          if (screenWidth > 0 && layoutWidth > 0) {
+            document.documentElement.style.setProperty('--aquarium-screen-height', `${screenHeight * layoutWidth / screenWidth}px`);
+          }
+        };
+        updateAquariumScreen();
+        document.addEventListener('DOMContentLoaded', updateAquariumScreen, { once: true });
+        window.addEventListener('resize', updateAquariumScreen);
+        window.addEventListener('orientationchange', updateAquariumScreen);
+        window.addEventListener('pageshow', updateAquariumScreen);
+      }
+    </script>}
     <link rel="icon" href="/favicon.png" />
     <link rel="canonical" href={canonical} />
     <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />

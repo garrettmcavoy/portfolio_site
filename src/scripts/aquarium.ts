@@ -11,7 +11,6 @@ import { backgrounds, backgroundColors, type Background } from './aquarium-backg
 import { createFishGeometry } from './aquarium-geometry';
 import { createFishAvoidance } from './aquarium-avoidance';
 import { createReefBarrier, type ReefTriangle } from './aquarium-reef';
-import { showViewportInfo } from './aquarium-viewport-info';
 
 interface Part {
   name: string;
@@ -30,7 +29,6 @@ type Models = Record<string, Model>;
 const tailPhases: Record<number, number> = { 22: 91, 16: 84, 15: 70, 23: 56, 25: 42, 21: 28, 20: 14, 27: 0, 28: 0 };
 
 const aquarium = document.querySelector<HTMLElement>('[data-aquarium]');
-if (aquarium) showViewportInfo(aquarium);
 if (aquarium) initialize(aquarium).catch(error => {
   // The static reef remains available when WebGL or an asset is unavailable.
   console.warn('Aquarium could not start:', error);

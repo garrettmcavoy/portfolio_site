@@ -20,8 +20,8 @@ import Aquarium from '../components/Aquarium.astro';
     margin-top: calc(0px - var(--aquarium-bleed-top));
     width: 100%;
     height: 100dvh;
-    /* Large viewport units can still stop inside Safari's compact URL bar.
-       Give the scene additional coverage through both reported safe areas. */
-    height: calc(100lvh + var(--aquarium-bleed-top) + var(--aquarium-bleed-bottom));
+    /* Keep drawing through Safari's controls even when its viewport units
+       exclude part of the display. Controls remain in the visible viewport. */
+    height: max(calc(100lvh + var(--aquarium-bleed-top) + var(--aquarium-bleed-bottom)), var(--aquarium-screen-height, 0px));
   }
 </style>
