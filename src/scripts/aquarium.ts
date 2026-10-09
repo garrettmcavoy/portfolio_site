@@ -7,6 +7,7 @@ import {
 } from 'three';
 import { loadSwimming } from './aquarium-motion';
 import { createAquariumAudio } from './aquarium-audio';
+import { backgrounds, backgroundColors, type Background } from './aquarium-backgrounds';
 import { createFishGeometry } from './aquarium-geometry';
 import { createFishAvoidance } from './aquarium-avoidance';
 import { createReefBarrier, type ReefTriangle } from './aquarium-reef';
@@ -23,16 +24,6 @@ interface Part {
 }
 interface Model { meshes: Part[]; materials: Record<string, string | null> }
 type Models = Record<string, Model>;
-
-const backgrounds = {
-  classic: { top: [.002, .012, .12], bottom: [.018, .14, .105], light: 1, tint: 0xfff5df },
-  blue: { top: [.003, .028, .22], bottom: [.012, .10, .23], light: 1.05, tint: 0xe9f6ff },
-  lagoon: { top: [.004, .06, .12], bottom: [.025, .25, .19], light: 1.1, tint: 0xecffeb },
-  dusk: { top: [.02, .008, .075], bottom: [.075, .055, .10], light: .75, tint: 0xffd2a0 },
-  night: { top: [.001, .003, .018], bottom: [.003, .016, .035], light: .4, tint: 0xb9d8ff },
-  black: { top: [0, 0, 0], bottom: [0, 0, 0], light: 1, tint: 0xfff5df },
-};
-type Background = keyof typeof backgrounds;
 
 // Recovered tail-vertex phase offsets; global angular speed is 14 rad/s.
 const tailPhases: Record<number, number> = { 22: 91, 16: 84, 15: 70, 23: 56, 25: 42, 21: 28, 20: 14, 27: 0, 28: 0 };
@@ -301,6 +292,9 @@ async function initialize(container: HTMLElement) {
   applySound();
   function applyBackground() {
     const preset = backgrounds[selectedBackground];
+    const chrome = backgroundColors[selectedBackground];
+    document.documentElement.style.setProperty('--aquarium-chrome', chrome);
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = chrome;
     backgroundOptions.forEach(option => { option.checked = option.value === selectedBackground; });
     water.uniforms.top.value.setRGB(...preset.top as [number, number, number]);
     water.uniforms.bottom.value.setRGB(...preset.bottom as [number, number, number]);

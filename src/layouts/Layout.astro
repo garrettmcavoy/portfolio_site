@@ -1,6 +1,7 @@
 ---
 import font from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
 import Dropdown from '../components/Dropdown.astro';
+import { backgroundColors } from '../scripts/aquarium-backgrounds';
 import '../styles/global.css';
 
 interface Props {
@@ -13,12 +14,23 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
-<html lang="en" class:list={{ 'aquarium-root': immersive }}>
+<html lang="en" class:list={{ 'aquarium-root': immersive }} style={immersive ? `--aquarium-chrome:${backgroundColors.classic}` : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content={`width=device-width, initial-scale=1.0${immersive ? ', viewport-fit=cover' : ''}`} />
     <meta name="description" content={description} />
-    {!immersive && <meta name="theme-color" content="#e5e5e1" />}
+    <meta name="theme-color" content={immersive ? backgroundColors.classic : '#e5e5e1'} />
+    {immersive && <script is:inline define:vars={{ backgroundColors }}>
+      // Restore the bar color before the first paint or aquarium asset loading.
+      try {
+        const saved = JSON.parse(localStorage.getItem('portfolio-aquarium-settings') || '{}');
+        if (Object.hasOwn(backgroundColors, saved.background)) {
+          const color = backgroundColors[saved.background];
+          document.documentElement.style.setProperty('--aquarium-chrome', color);
+          document.querySelector('meta[name="theme-color"]').content = color;
+        }
+      } catch { /* Optional storage; keep the default reef color. */ }
+    </script>}
     <link rel="icon" href="/favicon.png" />
     <link rel="canonical" href={canonical} />
     <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />

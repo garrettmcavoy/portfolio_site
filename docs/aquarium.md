@@ -57,6 +57,9 @@ Classic, Blue water, Lagoon, Dusk, Night, and Black background choices.
 Black leaves the reef and fish lit. Background and mute/unmute preferences are saved locally
 when browser storage is available and restored when returning to the home page
 or reloading, before audio starts. First-time visitors still start unmuted.
+The root, page, and aquarium fallback colors share the selected water tint,
+along with the browser's `theme-color`. A small head script restores a saved
+tint before the first paint, independently of WebGL asset loading.
 On supporting iPhone browsers, enabled audio uses the playback session so the
 Ring/Silent switch does not silence the tank. Muting, hiding, or leaving the
 page restores the previous session type. Touch/click gestures unlock audio

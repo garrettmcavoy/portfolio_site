@@ -39,8 +39,8 @@ nav summary::marker { content: ''; }
 .skip-link { position: fixed; top: .5rem; left: .5rem; z-index: 10; padding: .5rem 1rem; background: #fff; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 /* Home navigation sits over the aquarium instead of reserving a sidebar. */
-.aquarium-root { background: #001b45; overscroll-behavior: none; }
-.aquarium-home { min-height: 100dvh; overflow: hidden; background: #001b45; color: #fff; }
+.aquarium-root { background: var(--aquarium-chrome, #001b45); overscroll-behavior: none; }
+.aquarium-home { min-height: 100dvh; overflow: hidden; background: var(--aquarium-chrome, #001b45); color: #fff; }
 .aquarium-home .layout-container { min-height: 100dvh; }
 .aquarium-home .sidebar { position: absolute; top: 0; left: 0; padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); pointer-events: none; text-shadow: 0 1px 5px rgb(0 0 0 / .6); }
 .aquarium-home .site-title, .aquarium-home nav { pointer-events: auto; }
