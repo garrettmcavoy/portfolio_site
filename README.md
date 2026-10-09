@@ -33,6 +33,8 @@ Browser tests use the production build. They cover desktop and mobile gallery lo
 - `src/components/OptimizedImage.astro`: shared responsive project imagery.
 - `src/scripts/gallery.ts`: viewport image loading and the native dialog lightbox.
 - `src/scripts/dropdown.ts`: 180 ms vertical/horizontal menu animation with reduced-motion support.
+- `src/components/Aquarium.astro` and `src/scripts/aquarium.ts`: home page reef, WebGL fish animation, saved background/audio preferences, and glass-tap sounds.
+- `public/aquarium/`: converted early SereneScreen reference artwork; provenance and implementation notes are in [docs/aquarium.md](docs/aquarium.md).
 
 To add photographs, put originals in `src/assets/images/<year>/` and add their relative paths to `src/data/photography.ts`. Astro infers dimensions and generates the required sizes. If known, replace generic photo labels with descriptive captions in the gallery data/component.
 

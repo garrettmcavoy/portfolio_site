@@ -6,8 +6,9 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  immersive?: boolean;
 }
-const { title, description = 'Photography, engineering projects, and work by Garrett McAvoy.' } = Astro.props;
+const { title, description = 'Photography, engineering projects, and work by Garrett McAvoy.', immersive = false } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -17,7 +18,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#e5e5e1" />
+    <meta name="theme-color" content={immersive ? '#001b45' : '#e5e5e1'} />
     <link rel="icon" href="/favicon.png" />
     <link rel="canonical" href={canonical} />
     <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
@@ -27,7 +28,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <title>{title}</title>
   </head>
-  <body>
+  <body class:list={{ 'aquarium-home': immersive }}>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="layout-container">
       <aside class="sidebar">

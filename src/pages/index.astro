@@ -1,21 +1,18 @@
 ---
-import Layout from '../layouts/Layout.astro'; // Import the layout component
+import Layout from '../layouts/Layout.astro';
+import Aquarium from '../components/Aquarium.astro';
 ---
 
-<Layout title="Garrett McAvoy">
-  <div class="container">
+<Layout title="Garrett McAvoy" immersive>
+  <div class="home-scene">
+    <h1 class="sr-only">Garrett McAvoy</h1>
+    <Aquarium />
   </div>
 </Layout>
 
 <style>
-  .container {
-    display: flex;
+  .home-scene {
     width: 100%;
-    align-items: flex-end;
-    justify-content: flex-end;
-    height: 100%; /* Adjust the height as needed */
-  }
-  .dwg {
-    width: 40rem;
+    height: 100dvh;
   }
 </style>

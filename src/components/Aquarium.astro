@@ -1,0 +1,77 @@
+<section class="aquarium" aria-label="Animated tropical reef aquarium" data-aquarium>
+  <img class="aquarium-poster" src="/aquarium/poster.webp" alt="A coral reef in deep blue water" width="1024" height="768" fetchpriority="high" />
+  <canvas aria-hidden="true"></canvas>
+  <div class="aquarium-controls" hidden>
+    <details class="aquarium-settings">
+      <summary aria-label="Choose aquarium background" title="Background">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17h18M3 21h18M7 17a5 5 0 0 1 10 0M12 4v3M4 9l2 2m14-2-2 2" /></svg>
+      </summary>
+      <div class="settings-panel">
+        <fieldset>
+          <legend>Water</legend>
+          <div class="background-options">
+            {[
+              ['classic', 'Classic', '#081b55', '#246e59'],
+              ['blue', 'Blue water', '#12398a', '#1c6685'],
+              ['lagoon', 'Lagoon', '#136777', '#49a880'],
+              ['dusk', 'Dusk', '#35224b', '#946656'],
+              ['night', 'Night', '#060c23', '#16343f'],
+              ['black', 'Black', '#000', '#000'],
+            ].map(([value, label, top, bottom]) => (
+              <label class="background-option">
+                <input type="radio" name="aquarium-background" data-background value={value} checked={value === 'classic'} />
+                <span class="water-swatch" style={`--water-top:${top};--water-bottom:${bottom}`}></span>
+                <span class="preset-name">{label}</span>
+                <svg class="preset-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+    </details>
+    <button type="button" data-sound aria-label="Mute aquarium sound" aria-pressed="false" title="Mute sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10.5 6 6 9H3.5v6H6l4.5 3z" fill="currentColor" stroke="none" />
+        <g class="sound-waves"><path d="M15 8.5a5 5 0 0 1 0 7M18 5.5a9 9 0 0 1 0 13" /></g>
+        <path class="sound-muted" d="m15 9 6 6m0-6-6 6" />
+      </svg>
+    </button>
+  </div>
+</section>
+
+<script>
+  import '../scripts/aquarium';
+</script>
+
+<style>
+  .aquarium { position: relative; width: 100%; height: 100%; overflow: hidden; background: #001b45; }
+  canvas, .aquarium-poster { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center bottom; }
+  .aquarium-poster { object-position: center calc(100% + 5dvh); }
+  canvas { opacity: 0; transition: opacity .3s ease; }
+  .aquarium[data-ready] canvas { opacity: 1; }
+  .aquarium-controls { position: absolute; top: max(.6rem, env(safe-area-inset-top)); right: max(.6rem, env(safe-area-inset-right)); display: flex; gap: .15rem; z-index: 3; }
+  .aquarium-controls[hidden] { display: none; }
+  button, summary { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #fff; cursor: pointer; }
+  button:focus-visible, summary:focus-visible { outline: 1px solid #fff; outline-offset: 1px; }
+  svg { display: block; width: 20px; height: 20px; filter: drop-shadow(0 1px 2px rgb(0 0 0 / .5)); }
+  .sound-muted, [aria-pressed="true"] .sound-waves { display: none; }
+  [aria-pressed="true"] .sound-muted { display: block; }
+  summary { list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  .settings-panel { position: absolute; top: calc(100% + .25rem); right: 0; width: min(16rem, calc(100vw - 2rem)); padding: .85rem 1rem; border-radius: 4px; background: rgb(3 10 17 / .95); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgb(255 255 255 / .12); box-shadow: 0 8px 28px rgb(0 0 0 / .16); }
+  details[open] .settings-panel { animation: reveal .14s ease-out; }
+  fieldset { padding: 0; margin: 0; border: 0; min-width: 0; }
+  legend { padding: 0 0 .3rem; font-size: .8rem; color: rgb(255 255 255 / .5); }
+  .background-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .6rem; }
+  .background-option { position: relative; display: flex; align-items: center; gap: .45rem; min-height: 38px; cursor: pointer; font-size: .9rem; white-space: nowrap; }
+  .background-option input { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .water-swatch { flex-shrink: 0; width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(var(--water-top), var(--water-bottom)); border: 1px solid rgb(255 255 255 / .25); }
+  .preset-name { opacity: .65; transition: opacity .12s; }
+  .background-option:hover .preset-name, input:checked ~ .preset-name { opacity: 1; }
+  .preset-check { width: 11px; height: 11px; margin-left: auto; flex-shrink: 0; visibility: hidden; filter: none; }
+  input:checked ~ .preset-check { visibility: visible; }
+  .background-option:has(input:focus-visible) { outline: 1px solid rgb(255 255 255 / .6); outline-offset: 2px; border-radius: 2px; }
+  @keyframes reveal { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) { .aquarium { width: 100%; } .settings-panel { top: calc(100% + 2rem); } }
+  @media (prefers-reduced-motion: reduce) { canvas { transition: none; } details[open] .settings-panel { animation: none; } }
+</style>

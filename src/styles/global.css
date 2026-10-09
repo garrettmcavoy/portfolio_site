@@ -26,8 +26,8 @@ a { color: inherit; }
 .site-title a { text-decoration: none; }
 nav ul { list-style: none; }
 nav li { margin: .75rem 0; position: relative; }
-nav a, nav summary { display: block; padding: .15rem 0; text-decoration: none; border-radius: 8px; cursor: pointer; }
-nav a:hover, nav summary:hover { background: rgb(214, 214, 210); }
+nav a, nav summary { display: block; padding: .15rem 0; text-decoration: none; text-underline-offset: .16em; text-decoration-thickness: 1px; cursor: pointer; }
+nav a:hover, nav summary:hover { text-decoration: underline; }
 nav summary { list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
 nav summary::marker { content: ''; }
@@ -38,6 +38,14 @@ nav summary::marker { content: ''; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .skip-link { position: fixed; top: .5rem; left: .5rem; z-index: 10; padding: .5rem 1rem; background: #fff; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
+/* Home navigation sits over the aquarium instead of reserving a sidebar. */
+.aquarium-home { background: #001b45; color: #fff; }
+.aquarium-home .layout-container { min-height: 100dvh; }
+.aquarium-home .sidebar { position: absolute; top: 0; left: 0; pointer-events: none; text-shadow: 0 1px 5px rgb(0 0 0 / .6); }
+.aquarium-home .site-title, .aquarium-home nav { pointer-events: auto; }
+.aquarium-home .main-content { width: 100%; min-height: 100dvh; padding: 0; }
+.aquarium-home .dropdown-reveal { border-color: rgb(255 255 255 / .8); }
+.aquarium-home .skip-link { color: #000; }
 @media (max-width: 768px) {
   .layout-container { flex-direction: column; }
   .sidebar { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
