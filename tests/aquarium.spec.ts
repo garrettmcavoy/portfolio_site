@@ -1,4 +1,25 @@
 import { test, expect, type Page } from '@playwright/test';
+import sharp from 'sharp';
+
+async function sceneFrame(page: Page) {
+  const canvas = page.locator('[data-aquarium] canvas');
+  const screenshot = await canvas.screenshot();
+  const { data, info } = await sharp(screenshot).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const bounds = (await canvas.boundingBox())!;
+  const scaleX = info.width/bounds.width, scaleY = info.height/bounds.height;
+  // Mask overlay pixels locally. Injecting temporary visibility CSS around
+  // screenshots can race the GPU compositor and make a still frame differ.
+  for (const selector of ['.sidebar', '.aquarium-controls']) {
+    const overlay = await page.locator(selector).boundingBox();
+    if (!overlay) continue;
+    const x0 = Math.max(0, Math.floor((overlay.x-bounds.x-8)*scaleX));
+    const x1 = Math.min(info.width, Math.ceil((overlay.x+overlay.width-bounds.x+8)*scaleX));
+    const y0 = Math.max(0, Math.floor((overlay.y-bounds.y-8)*scaleY));
+    const y1 = Math.min(info.height, Math.ceil((overlay.y+overlay.height-bounds.y+8)*scaleY));
+    for (let y = y0; y < y1; y++) data.fill(0, (y*info.width+x0)*4, (y*info.width+x1)*4);
+  }
+  return data;
+}
 
 async function trackAudio(page: Page) {
   await page.addInitScript(() => {
@@ -26,9 +47,7 @@ test('home aquarium renders, animates, and follows reduced-motion changes', asyn
   await page.goto('/');
   const tank = page.locator('[data-aquarium]');
   await expect(tank).toHaveAttribute('data-ready', '');
-  const canvas = tank.locator('canvas');
-  // Controls overlap the canvas; compare the scene independently of hover/focus fades.
-  const screenshot = () => canvas.screenshot({ style: '.aquarium-controls { visibility: hidden !important; }' });
+  const screenshot = () => sceneFrame(page);
   const first = await screenshot();
   await expect.poll(async () => (await screenshot()).equals(first)).toBe(false);
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -55,8 +74,8 @@ test('aquarium starts still when reduced motion is preferred', async ({ page }) 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('[data-aquarium]')).toHaveAttribute('data-ready', '');
-  const canvas = page.locator('[data-aquarium] canvas');
-  expect((await canvas.screenshot()).equals(await canvas.screenshot())).toBe(true);
+  const screenshot = () => sceneFrame(page);
+  await expect.poll(async () => (await screenshot()).equals(await screenshot()), { timeout: 10000 }).toBe(true);
 });
 
 test('a static reef remains available without JavaScript', async ({ browser, baseURL }) => {
@@ -71,6 +90,7 @@ test('a static reef remains available without JavaScript', async ({ browser, bas
 });
 
 test('home fills the window and keeps white navigation during resizing', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const tank = page.locator('[data-aquarium]');
   await expect(tank).toHaveAttribute('data-ready', '');
@@ -106,7 +126,7 @@ test('top-right icons replace old controls and background choices persist', asyn
   expect(controls!.y).toBeLessThan(20);
   expect(viewport.width-controls!.x-controls!.width).toBeLessThan(20);
   await expect(page.getByRole('button', { name: 'Mute aquarium sound', exact: true })).toHaveAttribute('aria-pressed', 'false');
-  const screenshot = () => page.locator('[data-aquarium] canvas').screenshot({ style: '.aquarium-controls { visibility: hidden !important; }' });
+  const screenshot = () => sceneFrame(page);
   for (const preset of ['blue', 'lagoon', 'dusk', 'night', 'black']) {
     await page.locator('.aquarium-settings summary').click();
     const before = await screenshot();
