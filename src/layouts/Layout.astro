@@ -33,7 +33,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </script>}
     {immersive && <script is:inline>
       // Some iPhone Safari layouts report zero safe areas and a 100lvh that
-      // stops inside the toolbar. Size the artwork from the screen instead.
+      // stops inside the toolbar. Cover the display below its system top edge.
       // Restrict this to phones: an iPad window can occupy part of its screen.
       if (/iPhone|iPod/.test(navigator.userAgent)) {
         const updateAquariumScreen = () => {
@@ -46,7 +46,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           // the layout viewport and should not resize the aquarium.
           const layoutWidth = document.documentElement.clientWidth || innerWidth;
           if (screenWidth > 0 && layoutWidth > 0) {
-            document.documentElement.style.setProperty('--aquarium-screen-height', `${screenHeight * layoutWidth / screenWidth}px`);
+            const scale = layoutWidth / screenWidth;
+            // Safari on the 402×874 display starts the page below a 62px
+            // system status region but reports safe-area-inset-top as zero.
+            // Only compensate when that region is outside the page; a full
+            // viewport or landscape view already includes the available area.
+            const excludedTop = !landscape && shortSide === 402 && longSide === 874
+              && innerHeight / scale < screenHeight - 1 ? 62 : 0;
+            document.documentElement.style.setProperty('--aquarium-screen-height', `${(screenHeight - excludedTop) * scale}px`);
           }
         };
         updateAquariumScreen();

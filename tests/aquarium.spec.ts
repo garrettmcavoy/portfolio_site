@@ -116,7 +116,7 @@ test('home fills the window and keeps white navigation during resizing', async (
   await expect(page.locator('.site-title a')).toHaveCSS('color', 'rgb(0, 0, 0)');
 });
 
-test('iPhone artwork covers the screen when Safari excludes browser chrome', async ({ browser, baseURL }) => {
+test('iPhone artwork fills below the system top edge without overflowing the screen', async ({ browser, baseURL }) => {
   const context = await browser.newContext({
     baseURL,
     viewport: { width: 402, height: 714 },
@@ -136,11 +136,19 @@ test('iPhone artwork covers the screen when Safari excludes browser chrome', asy
       const rect = element.getBoundingClientRect();
       const canvas = element.querySelector('canvas')!;
       return { width: rect.width, height: rect.height, canvasHeight: canvas.height };
-    })).toEqual({ width: 402, height: 874, canvasHeight: 1311 });
+    })).toEqual({ width: 402, height: 812, canvasHeight: 1218 });
     const controls = await page.locator('.aquarium-controls').boundingBox();
     expect(controls!.y).toBeLessThan(20);
     expect(controls!.y + controls!.height).toBeLessThan(714);
     await expect(page.getByRole('link', { name: 'Home', exact: true })).toBeVisible();
+    // With no excluded top region, use the whole viewport in either direction.
+    for (const size of [{ width: 402, height: 874 }, { width: 874, height: 402 }]) {
+      await page.setViewportSize(size);
+      await expect.poll(() => tank.evaluate(element => ({
+        height: element.getBoundingClientRect().height,
+        canvasHeight: element.querySelector('canvas')!.height,
+      }))).toEqual({ height: size.height, canvasHeight: Math.floor(size.height * 1.5) });
+    }
     // The screen sizing is home-only; content pages retain their own height.
     await page.goto('/photography/');
     expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--aquarium-screen-height'))).toBe('');
