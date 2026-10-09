@@ -1,0 +1,46 @@
+name: Browser tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Restore optimized image cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: astro-images-${{ runner.os }}-${{ hashFiles('package-lock.json', 'src/assets/images/**', 'src/components/GalleryPhoto.astro', 'src/components/OptimizedImage.astro') }}
+          restore-keys: astro-images-${{ runner.os }}-
+      - name: Build
+        run: npm run build
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Test production site
+        run: npm test
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-diagnostics
+          path: test-results/
+          retention-days: 3

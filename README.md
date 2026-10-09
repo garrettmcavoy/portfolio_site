@@ -42,6 +42,6 @@ Only the first photograph is eager/high priority. Other images are kept in templ
 
 ## Deployment
 
-Pull requests run type checks, a static build, and Chromium/WebKit browser tests. Pushes to `master` run the same checks and deploy through the existing GitHub Pages workflow. Build-time image transforms are cached in CI. The site needs no application server, runtime image service, or database.
+Pushes to `master` run type checks and a static build, then deploy through GitHub Pages. Chromium/WebKit browser tests run separately on pull requests or through the manually dispatched **Browser tests** action; they do not block deployment. Build-time image transforms are cached in CI. The site needs no application server, runtime image service, or database.
 
 See [the optimization measurements](docs/performance.md) for a local before/after comparison.

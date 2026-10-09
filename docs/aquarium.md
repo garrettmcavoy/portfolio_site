@@ -57,6 +57,10 @@ Classic, Blue water, Lagoon, Dusk, Night, and Black background choices.
 Black leaves the reef and fish lit. Background and mute/unmute preferences are saved locally
 when browser storage is available and restored when returning to the home page
 or reloading, before audio starts. First-time visitors still start unmuted.
+On supporting iPhone browsers, enabled audio uses the playback session so the
+Ring/Silent switch does not silence the tank. Muting, hiding, or leaving the
+page restores the previous session type. Touch/click gestures unlock audio
+and resume suspended or interrupted contexts; Safari can require an initial tap.
 The picker uses labeled color swatches,
 closes after a choice, and dismisses on Escape or an outside press. Icons stay white with no hover effect. The light slider and bottom controls are removed.
 
