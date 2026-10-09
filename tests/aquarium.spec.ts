@@ -228,6 +228,42 @@ test('mute and unmute survive page navigation, reloads, and background changes',
   await expect(speaker).toHaveAttribute('aria-pressed', 'false');
 });
 
+test('iPhone audio selects playback, releases its session on mute, and resumes interruptions', async ({ page }) => {
+  await page.addInitScript(() => {
+    const audio = { session: { type: 'auto' }, interrupted: false, resumes: 0 };
+    (window as unknown as { iphoneAudio: typeof audio }).iphoneAudio = audio;
+    Object.defineProperty(navigator, 'audioSession', { configurable: true, value: audio.session });
+    const state = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state')!;
+    Object.defineProperty(AudioContext.prototype, 'state', {
+      configurable: true,
+      get() { return audio.interrupted ? 'interrupted' : state.get!.call(this); },
+    });
+    const resume = AudioContext.prototype.resume;
+    AudioContext.prototype.resume = function () {
+      audio.resumes++;
+      audio.interrupted = false;
+      return resume.call(this);
+    };
+  });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.locator('[data-aquarium]')).toHaveAttribute('data-ready', '');
+  const session = () => page.evaluate(() => (window as unknown as { iphoneAudio: { session: { type: string } } }).iphoneAudio.session.type);
+  await expect.poll(session).toBe('playback');
+  await page.locator('[data-sound]').click();
+  await expect.poll(session).toBe('auto');
+  await page.locator('[data-sound]').click();
+  await expect.poll(session).toBe('playback');
+  const before = await page.evaluate(() => {
+    const audio = (window as unknown as { iphoneAudio: { interrupted: boolean; resumes: number } }).iphoneAudio;
+    audio.interrupted = true;
+    return audio.resumes;
+  });
+  // A control gesture unlocks audio without invoking the glass-tap handler.
+  await page.locator('.aquarium-settings summary').click();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { iphoneAudio: { resumes: number } }).iphoneAudio.resumes)).toBeGreaterThan(before);
+});
+
 
 test('the edited voice plays on every tenth glass tap without stacking and respects mute', async ({ page, isMobile }) => {
   await trackAudio(page);

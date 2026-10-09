@@ -417,6 +417,9 @@ async function initialize(container: HTMLElement) {
   };
   document.addEventListener('pointerdown', unlockAudio, true);
   document.addEventListener('pointerup', unlockAudio, true);
+  // iOS recognizes completed touch/click gestures for audio activation.
+  document.addEventListener('touchend', unlockAudio, { capture: true, passive: true });
+  document.addEventListener('click', unlockAudio, true);
   document.addEventListener('keydown', unlockAudio, true);
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(container);
@@ -432,6 +435,8 @@ async function initialize(container: HTMLElement) {
     if (event.persisted) return;
     document.removeEventListener('pointerdown', unlockAudio, true);
     document.removeEventListener('pointerup', unlockAudio, true);
+    document.removeEventListener('touchend', unlockAudio, true);
+    document.removeEventListener('click', unlockAudio, true);
     document.removeEventListener('keydown', unlockAudio, true);
     resizeObserver.disconnect();
     intersectionObserver.disconnect();

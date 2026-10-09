@@ -22,6 +22,23 @@ export function createAquariumAudio() {
   let voiceRecording: Promise<AudioBuffer> | undefined, voice: AudioBufferSourceNode | undefined;
   let bubbleVolume: GainNode | undefined;
   let tapCount = 0, voiceStarting = false, voiceEpoch = 0, disposed = false;
+  const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+  const previousSessionType = session?.type;
+  let ownsSession = false;
+  function updateSession() {
+    if (!session) return;
+    try {
+      // iPhone's default Web Audio session obeys the Ring/Silent switch.
+      // Use media playback while sound is enabled, releasing it when idle.
+      if (wanted && !muted && !disposed) {
+        session.type = 'playback';
+        ownsSession = true;
+      } else if (ownsSession) {
+        if (session.type === 'playback') session.type = previousSessionType ?? 'auto';
+        ownsSession = false;
+      }
+    } catch { /* Audio Session is optional; other browsers use Web Audio directly. */ }
+  }
   function setup() {
     if (!context) {
       context = new AudioContext({ latencyHint: 'interactive' });
@@ -44,6 +61,7 @@ export function createAquariumAudio() {
   }
   async function setBubbles(enabled: boolean) {
     wanted = enabled;
+    updateSession();
     if (!enabled) {
       if (source && context) {
         offset = (offset+context.currentTime-beganAt)%source.buffer!.duration;
@@ -112,6 +130,7 @@ export function createAquariumAudio() {
   }
   function setMuted(value: boolean) {
     muted = value;
+    updateSession();
     if (context && master) master.gain.setTargetAtTime(value ? 0 : .8, context.currentTime, .015);
     if (value) { voiceEpoch++; voice?.stop(); }
   }
@@ -141,10 +160,12 @@ export function createAquariumAudio() {
     unlock() {
       if (muted) return;
       const instance = setup();
-      if (instance.state === 'suspended') void instance.resume().catch(error => console.warn('Audio could not resume:', error));
+      // Safari also uses an "interrupted" state after a call or app switch.
+      if (instance.state !== 'running' && instance.state !== 'closed') void instance.resume().catch(error => console.warn('Audio could not resume:', error));
     },
     dispose() {
       disposed = true; voiceEpoch++; wanted = false;
+      updateSession();
       voice?.stop(); voice?.disconnect(); source?.stop(); source?.disconnect();
       void context?.close();
     },
