@@ -12,8 +12,9 @@ import Aquarium from '../components/Aquarium.astro';
 
 <style>
   .home-scene {
-    position: fixed;
-    inset: 0;
+    /* Safari fills fixed layers' browser edges with solid color. Keep the
+       scene in document flow so its native scroll-edge effect can sample it. */
+    position: relative;
     width: 100%;
     height: 100dvh;
     /* Continue the reef beneath iOS's translucent, expanded browser controls. */
