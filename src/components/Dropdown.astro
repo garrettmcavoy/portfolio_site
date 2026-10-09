@@ -10,8 +10,14 @@ const active = items.some(item => currentPath === item.href.replace(/\/$/, ''));
 <li class="dropdown">
   <details class:list={{ active }}>
     <summary>{title}</summary>
-    <ul class="dropdown-menu">
-      {items.map(item => <li><a href={item.href} aria-current={currentPath === item.href.replace(/\/$/, '') ? 'page' : undefined}>{item.name}</a></li>)}
-    </ul>
+    <div class="dropdown-reveal">
+      <ul class="dropdown-menu">
+        {items.map(item => <li><a href={item.href} aria-current={currentPath === item.href.replace(/\/$/, '') ? 'page' : undefined}>{item.name}</a></li>)}
+      </ul>
+    </div>
   </details>
 </li>
+
+<script>
+  import '../scripts/dropdown';
+</script>

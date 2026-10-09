@@ -9,7 +9,7 @@ test('gallery reserves space and defers offscreen and enlarged photos', async ({
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/photography/', { waitUntil: 'networkidle' });
   const photos = page.locator('[data-photo]');
-  await expect(photos).toHaveCount(38);
+  await expect(photos).toHaveCount(35);
   await expect(photos.first().locator('img')).toBeVisible();
   await expect.poll(() => photos.first().locator('img').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expect(photos.last().locator('template')).toHaveCount(1);
@@ -71,7 +71,7 @@ test('navigation and photographs work without JavaScript', async ({ browser, bas
   await page.goto('/');
   await page.getByText('Portfolio', { exact: true }).click();
   await page.getByRole('link', { name: 'Photography', exact: true }).click();
-  await expect(page.locator('[data-photo] img')).toHaveCount(38);
+  await expect(page.locator('[data-photo] img')).toHaveCount(35);
   const href = await page.locator('[data-photo]').first().getAttribute('href');
   const response = await context.request.get(href!);
   expect(response.status()).toBe(200);

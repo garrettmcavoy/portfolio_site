@@ -31,6 +31,7 @@ nav a:hover, nav summary:hover { background: rgb(214, 214, 210); }
 nav summary { list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
 nav summary::marker { content: ''; }
+.dropdown-reveal { overflow: hidden; }
 .dropdown-menu { width: 100%; padding-bottom: .25rem; border-bottom: 1px solid #000; }
 .dropdown-menu a { padding-left: 1rem; }
 .main-content { padding: 3.25rem 0 0; display: flex; justify-content: center; align-items: flex-start; min-width: 0; width: calc(100% - 200px); min-height: 100vh; }
@@ -44,10 +45,11 @@ nav summary::marker { content: ''; }
   nav > ul { display: flex; align-items: baseline; gap: 1rem; width: max-content; }
   nav > ul > li { margin: 0; flex: 0 0 auto; }
   .dropdown details { white-space: nowrap; }
-  .dropdown details[open] { display: flex; align-items: baseline; gap: 1rem; }
+  .dropdown details[open] { display: flex; align-items: baseline; }
   .dropdown summary { display: inline-block; vertical-align: baseline; }
-  .dropdown-menu { display: inline-flex; gap: 1rem; vertical-align: baseline; width: auto; padding: 0; border: 0; }
-  details:not([open]) .dropdown-menu { display: none; }
+  .dropdown-reveal { border-right: 1px solid #000; }
+  .dropdown-menu { display: inline-flex; gap: 1rem; vertical-align: baseline; width: auto; margin-left: 1rem; padding: 0 .8rem 0 0; border: 0; }
+  details:not([open]) .dropdown-reveal { display: none; }
   .dropdown-menu li { margin: 0; }
   .dropdown-menu a { padding: .15rem 0; }
   .main-content { width: 100%; min-height: 0; padding: 1rem; }

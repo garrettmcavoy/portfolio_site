@@ -16,6 +16,8 @@ A fresh Chromium context loaded each production page at 1440 × 900 (1× pixel d
 
 Initial photo bytes fell by approximately 98.5–98.7%. These are single-run local lab measurements, not field measurements of the live domain; hosting, cache state, browser, network, viewport, and device will affect timings. Image payload excludes HTML, styles, scripts, fonts, and the favicon.
 
+The measurements above preceded removal of positions 2, 6, and 8 from the 2024 gallery. The current gallery contains 35 photographs.
+
 ## Changes
 
 - Preserve the source images, year groups, photo order, and horizontal gallery presentation.

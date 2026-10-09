@@ -32,10 +32,11 @@ Browser tests use the production build. They cover desktop and mobile gallery lo
 - `src/components/GalleryPhoto.astro`: responsive gallery and enlarged WebP assets generated at build time.
 - `src/components/OptimizedImage.astro`: shared responsive project imagery.
 - `src/scripts/gallery.ts`: viewport image loading and the native dialog lightbox.
+- `src/scripts/dropdown.ts`: 180 ms vertical/horizontal menu animation with reduced-motion support.
 
 To add photographs, put originals in `src/assets/images/<year>/` and add their relative paths to `src/data/photography.ts`. Astro infers dimensions and generates the required sizes. If known, replace generic photo labels with descriptive captions in the gallery data/component.
 
-Only the first photograph is eager/high priority. Other images are kept in templates until an IntersectionObserver sees them near the viewport, including the horizontal strips. A `noscript` fallback preserves the gallery without JavaScript. Enlarged images are requested only on activation; the anchor opens the image directly when scripting is disabled. Shared navigation uses native `details` and requires no JavaScript.
+Only the first photograph is eager/high priority. Other images are kept in templates until an IntersectionObserver sees them near the viewport, including the horizontal strips. A `noscript` fallback preserves the gallery without JavaScript. Enlarged images are requested only on activation; the anchor opens the image directly when scripting is disabled. Shared navigation uses native `details` and works without JavaScript. A small script adds quick opening and closing animations, with instant toggling for reduced motion.
 
 ## Deployment
 
