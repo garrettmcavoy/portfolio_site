@@ -14,28 +14,32 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-    /* Styling for the animation container */
     .animation-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: min(100%, 80vh); /* Full width of the parent */
-        height: 70vh; /* Fit the full viewport height */
-        margin: 0 auto; /* Center container horizontally */
-        overflow: hidden; /* Prevent any overflow issues */
-        border-radius: 15px; /* Rounded corners for the container */
-        background-color: #f0f0f0; /* Optional background color */
+        width: min(100%, 80vh);
+        height: 70vh;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #f0f0f0;
     }
 
     .animation-frame {
         width: 100%;
         height: 100%;
-        border: none; /* Remove iframe border */
-        border-radius: inherit; /* Match container's rounded corners */
+        border: none;
+        border-radius: inherit;
     }
 
-    @media (max-width: 768px) {
-
+    @media (min-width: 769px) and (orientation: landscape) {
+        .animation-container {
+            position: absolute;
+            inset: 0;
+            width: min(80dvh, calc(100vw - 2rem));
+            height: 70dvh;
+            margin: auto;
+        }
     }
-
 </style>

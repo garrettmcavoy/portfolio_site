@@ -27,7 +27,7 @@ a { color: inherit; }
 nav ul { list-style: none; }
 nav li { margin: .75rem 0; position: relative; }
 nav a, nav summary { display: block; padding: .15rem 0; text-decoration: none; border-radius: 8px; cursor: pointer; }
-nav a:hover, nav summary:hover, nav a[aria-current='page'] { background: rgb(214, 214, 210); }
+nav a:hover, nav summary:hover { background: rgb(214, 214, 210); }
 nav summary { list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
 nav summary::marker { content: ''; }
@@ -40,10 +40,16 @@ nav summary::marker { content: ''; }
 @media (max-width: 768px) {
   .layout-container { flex-direction: column; }
   .sidebar { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
-  nav > ul { display: flex; gap: 1rem; }
-  nav > ul > li { margin: 0; }
-  .dropdown-menu { position: absolute; top: calc(100% + .3rem); left: 0; width: 9rem; padding: .25rem; background: rgb(229, 229, 225); box-shadow: 0 4px 12px rgb(0 0 0 / .08); }
-  .dropdown-menu a { padding: .25rem .5rem; }
+  .sidebar nav { max-width: 100%; overflow-x: auto; padding-block: 4px; margin-block: -4px; scrollbar-width: thin; }
+  nav > ul { display: flex; align-items: baseline; gap: 1rem; width: max-content; }
+  nav > ul > li { margin: 0; flex: 0 0 auto; }
+  .dropdown details { white-space: nowrap; }
+  .dropdown details[open] { display: flex; align-items: baseline; gap: 1rem; }
+  .dropdown summary { display: inline-block; vertical-align: baseline; }
+  .dropdown-menu { display: inline-flex; gap: 1rem; vertical-align: baseline; width: auto; padding: 0; border: 0; }
+  details:not([open]) .dropdown-menu { display: none; }
+  .dropdown-menu li { margin: 0; }
+  .dropdown-menu a { padding: .15rem 0; }
   .main-content { width: 100%; min-height: 0; padding: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {
