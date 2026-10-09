@@ -15,9 +15,13 @@ import Aquarium from '../components/Aquarium.astro';
     /* Safari fills fixed layers' browser edges with solid color. Keep the
        scene in document flow so its native scroll-edge effect can sample it. */
     position: relative;
+    --aquarium-bleed-top: env(safe-area-inset-top, 0px);
+    --aquarium-bleed-bottom: env(safe-area-inset-bottom, 0px);
+    margin-top: calc(0px - var(--aquarium-bleed-top));
     width: 100%;
     height: 100dvh;
-    /* Continue the reef beneath iOS's translucent, expanded browser controls. */
-    height: 100lvh;
+    /* Large viewport units can still stop inside Safari's compact URL bar.
+       Give the scene additional coverage through both reported safe areas. */
+    height: calc(100lvh + var(--aquarium-bleed-top) + var(--aquarium-bleed-bottom));
   }
 </style>

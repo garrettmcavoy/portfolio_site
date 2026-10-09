@@ -49,7 +49,7 @@
   .aquarium-poster { object-position: center calc(100% + 5dvh); }
   canvas { opacity: 0; transition: opacity .3s ease; }
   .aquarium[data-ready] canvas { opacity: 1; }
-  .aquarium-controls { position: absolute; top: max(.6rem, env(safe-area-inset-top)); right: max(.6rem, env(safe-area-inset-right)); display: flex; gap: .15rem; z-index: 3; }
+  .aquarium-controls { position: absolute; top: calc(var(--aquarium-bleed-top, 0px) + max(.6rem, env(safe-area-inset-top))); right: max(.6rem, env(safe-area-inset-right)); display: flex; gap: .15rem; z-index: 3; }
   .aquarium-controls[hidden] { display: none; }
   button, summary { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #fff; cursor: pointer; }
   button:focus-visible, summary:focus-visible { outline: 1px solid #fff; outline-offset: 1px; }
