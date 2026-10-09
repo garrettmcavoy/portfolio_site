@@ -1,285 +1,39 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import GalleryPhoto from '../components/GalleryPhoto.astro';
+import { photoYears } from '../data/photography';
 ---
-<Layout title="Garrett McAvoy">
-    <div class="cv-container">
-        <!-- Photography content starts here -->
-        <div class="photography-container">
-            <div class="year-section">
-                <p class="year-title">2024</p>
-                <div class="photo-scroll">
-                    <img src="../images/2024/2024_23.jpg" />
-                    <img src="../images/2024/2024_24.jpg" />
-                    <img src="../images/2024/2024_25.jpg" />
-                    <img src="../images/2024/2024_26.jpg" />
-                    <img src="../images/2024/2024_7.jpg" />
-                    <img src="../images/2024/2024_22.jpg" />
-                    <img src="../images/2024/2024_19.jpg" />
-                    <img src="../images/2024/2024_6.jpg" />
-                    <img src="../images/2024/2024_4.jpg" />
-                    <img src="../images/2024/2024_5.jpg" />
-                    <img src="../images/2024/2024_2.jpg" />
-                    <img src="../images/2024/2024_10.jpg" />
-                    <img src="../images/2024/2024_14.jpg" />
-                    <img src="../images/2024/2024_20.jpg" />
-                    <img src="../images/2024/2024_12.jpg" />
-                    <img src="../images/2024/2024_1.jpg" />
-                    <img src="../images/2024/2024_21.jpg" />
-                    <img src="../images/2024/2024_3.jpg" />
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2023</p>
-                <div class="photo-scroll">
-                    <img src="../images/2023/2023_3.jpg" />
-                    <img src="../images/2023/2023_1.jpg" />
-                    <img src="../images/2023/2023_2.jpg" />
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2021</p>
-                <div class="photo-scroll">
-                    <img src="../images/2021/2021_1.jpg" />
-                    <img src="../images/2021/2021_2.jpg" />
-                    <img src="../images/2021/2021_3.jpg" />
-                    <img src="../images/2021/2021_4.jpg" />
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2018</p>
-                <div class="photo-scroll">
-                    <img src="../images/2018/2018_6.jpg" />
-                    <img src="../images/2018/2018_1.jpg" />
-                    <img src="../images/2018/2018_2.jpg" />
-                    <img src="../images/2018/2018_3.jpg" />
-                    <img src="../images/2018/2018_4.jpg" />
-                    <img src="../images/2018/2018_5.jpg" />
-                    <img src="../images/2018/2018_7.jpg" />
-                    <img src="../images/2018/2018_8.jpg" />
-                    <img src="../images/2018/2018_9.jpg" />
-                </div>
-            </div>
-            <div class="year-section">
-                <p class="year-title">2017</p>
-                <div class="photo-scroll">
-                    <img src="../images/2017/2017_1.jpg" />
-                    <img src="../images/2017/2017_2.jpg" />
-                    <img src="../images/2017/2017_3.jpg" />
-                    <img src="../images/2017/2017_4.jpg" />
-                </div>
-            </div>
+<Layout title="Photography · Garrett McAvoy" description="Selected photography by Garrett McAvoy, organized by year.">
+  <div class="photography-container">
+    <h1 class="sr-only">Photography</h1>
+    {photoYears.map(({ year, photos }, yearIndex) => (
+      <section class="year-section" aria-labelledby={`year-${year}`}>
+        <h2 class="year-title" id={`year-${year}`}>{year}</h2>
+        <div class="photo-scroll" tabindex="0" role="region" aria-label={`${year} photographs — scroll horizontally to explore`}>
+          {photos.map((path, index) => <GalleryPhoto path={path} year={year} index={index} priority={yearIndex === 0 && index === 0} />)}
         </div>
-        <!-- Photography content ends here -->
-    </div>
-    <!-- Overlay element lives in markup so scoped styles apply -->
-    <div class="lightbox-overlay" id="photo-overlay"></div>
+      </section>
+    ))}
+  </div>
+  <dialog class="lightbox" aria-label="Enlarged photograph" data-lightbox>
+    <button type="button" class="lightbox-close" aria-label="Close photograph" autofocus>×</button>
+    <img class="lightbox-image" alt="" decoding="async" />
+  </dialog>
 </Layout>
 
-<script is:client>
-  document.addEventListener('DOMContentLoaded', () => {
-    const images = document.querySelectorAll('.photo-scroll img');
-    let activeClone = null;
-    let activeOriginal = null;
-    let isOpen = false;
-    // Soft-focus perimeter only; no page cloning or backdrop filters
-
-    // Use the in-markup overlay so styles apply
-    const overlay = document.getElementById('photo-overlay');
-
-    function closeLightbox() {
-      if (!activeClone || !activeOriginal) {
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-        isOpen = false;
-        images.forEach((im) => (im.style.pointerEvents = ''));
-        // nothing else to clean up
-        return;
-      }
-
-      const rect = activeOriginal.getBoundingClientRect();
-      overlay.classList.remove('open');
-
-      // Animate clone back to original position
-      activeClone.style.left = rect.left + 'px';
-      activeClone.style.top = rect.top + 'px';
-      activeClone.style.width = rect.width + 'px';
-      activeClone.style.height = rect.height + 'px';
-      activeClone.style.borderRadius = getComputedStyle(activeOriginal).borderRadius || '0px';
-
-      activeClone.addEventListener('transitionend', () => {
-        if (activeClone && activeClone.parentNode) {
-          activeClone.parentNode.removeChild(activeClone);
-        }
-        activeClone = null;
-        activeOriginal = null;
-        document.body.style.overflow = '';
-        isOpen = false;
-        images.forEach((im) => (im.style.pointerEvents = ''));
-        // nothing else to clean up
-      }, { once: true });
-    }
-
-    overlay.addEventListener('click', closeLightbox);
-    // Fallback: close on any click outside the active image
-    document.addEventListener('click', (e) => {
-      if (activeClone && overlay.classList.contains('open') && !activeClone.contains(e.target)) {
-        closeLightbox();
-      }
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
-    });
-
-    images.forEach((img) => {
-      img.style.cursor = 'zoom-in';
-      img.addEventListener('click', () => {
-        if (isOpen) return;
-        activeOriginal = img;
-        const rect = img.getBoundingClientRect();
-
-        // Create animated clone
-        activeClone = img.cloneNode();
-        activeClone.style.position = 'fixed';
-        activeClone.style.left = rect.left + 'px';
-        activeClone.style.top = rect.top + 'px';
-        activeClone.style.width = rect.width + 'px';
-        activeClone.style.height = rect.height + 'px';
-        activeClone.style.objectFit = 'contain';
-        activeClone.style.zIndex = '10003';
-        activeClone.style.transition = 'left 250ms ease, top 250ms ease, width 250ms ease, height 250ms ease, border-radius 250ms ease';
-        activeClone.style.borderRadius = '12px';
-        activeClone.style.cursor = 'zoom-out';
-        document.body.appendChild(activeClone);
-        activeClone.addEventListener('click', closeLightbox);
-
-        // Compute target size to fit viewport
-        const naturalW = img.naturalWidth || rect.width;
-        const naturalH = img.naturalHeight || rect.height;
-        const maxW = window.innerWidth * 0.9;
-        const maxH = window.innerHeight * 0.9;
-        const ratio = naturalW / naturalH;
-        let targetW = maxW;
-        let targetH = targetW / ratio;
-        if (targetH > maxH) {
-          targetH = maxH;
-          targetW = targetH * ratio;
-        }
-        const targetLeft = (window.innerWidth - targetW) / 2;
-        const targetTop = (window.innerHeight - targetH) / 2;
-
-        requestAnimationFrame(() => {
-          overlay.classList.add('open');
-          document.body.style.overflow = 'hidden';
-          isOpen = true;
-          images.forEach((im) => (im.style.pointerEvents = 'none'));
-          activeClone.style.borderRadius = '0px';
-          activeClone.style.left = targetLeft + 'px';
-          activeClone.style.top = targetTop + 'px';
-          activeClone.style.width = targetW + 'px';
-          activeClone.style.height = targetH + 'px';
-          // No filter needed
-        });
-      });
-    });
-  });
+<script>
+  import '../scripts/gallery';
 </script>
 
 <style>
-    /* Use the same styles as in your CV page */
-    .cv-container {
-        overflow: hidden;
-        display: flex;
-        padding: 0;
-        margin: 0 auto;
-        gap: 1rem;
-        width: 100%;
-        flex-direction: column;
-        box-sizing: border-box;
-    }
-
-    /* Photography-specific styles */
-    .photography-container {
-        overflow: hidden;
-        display: flex;
-        max-width: 100%;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .year-section {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .year-title {
-        font-size: 1rem;
-        font-weight: bold;
-        margin-bottom: 0rem;
-    }
-
-    .photo-scroll {
-        display: flex;
-        gap: 1rem;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
-    }
-
-    .photo-scroll img {
-        width: auto;
-        max-height: 400px;
-        object-fit: cover;
-        scroll-snap-align: center;
-    }
-
-    /* Hide Scrollbar */
-    .photo-scroll::-webkit-scrollbar {
-        display: none;
-    }
-
-    .year-section:last-of-type {
-    margin-bottom: 5rem; /* Adjust value as needed */
-}
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-        .photo-scroll img {
-            max-width: 100%;  /* Ensure image doesn't exceed container width */
-            max-height: 300px;     /* Maintain aspect ratio */
-            object-fit: contain; /* Adjust object-fit to prevent cropping */
-        }
-
-        .year-title {
-            font-size: 1rem;
-        }
-
-        .cv-container {
-            padding: 0rem;
-            margin-right:0rem;
-        }
-    }
-
-    /* Lightbox overlay with uniform blur */
-    .lightbox-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        opacity: 0;
-        transition: opacity 200ms ease;
-        will-change: opacity;
-        z-index: 10001;
-        pointer-events: none;
-    }
-
-    .lightbox-overlay.open {
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    /* No extra blur layers needed now */
+  .photography-container { --photo-height: 400px; width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 5rem; }
+  .year-section { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+  .year-title { font-size: 1rem; font-weight: bold; }
+  .photo-scroll { display: flex; align-items: flex-start; gap: 1rem; overflow-x: auto; padding-bottom: .5rem; scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .lightbox { position: fixed; inset: 0; margin: auto; padding: 0; border: 0; width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; background: transparent; overflow: hidden; }
+  .lightbox[open] { display: grid; place-items: center; }
+  .lightbox::backdrop { background: rgb(0 0 0 / .88); }
+  .lightbox-image { display: block; max-width: 90vw; max-height: 86dvh; width: auto; height: auto; object-fit: contain; cursor: zoom-out; }
+  .lightbox-close { position: absolute; top: .5rem; right: 1rem; width: 44px; height: 44px; border: 0; background: transparent; color: white; font: 2rem/1 sans-serif; cursor: pointer; }
+  @media (max-width: 768px) { .photography-container { --photo-height: 300px; } }
 </style>

@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 ---
 
-<Layout title="Garrett McAvoy">
+<Layout title="Engineering · Garrett McAvoy">
   <div class="cv-container">
     <!-- Engineering content starts here -->
     <div class="engineering-container">
@@ -13,20 +14,18 @@ import Layout from '../layouts/Layout.astro';
         <!-- New scroll container -->
         <div class="engineer-scroll">
           <div class="image-wrapper">
-            <a href="/turbineshaft">
-              <img
-                src="/images/turbineshaft/thumbnail.png"
+            <a href="/turbineshaft/">
+              <OptimizedImage sizes="(max-width: 768px) 200px, 300px" source="turbineshaft/thumbnail.png"
                 alt="Turbine Shaft Design"
                 class="image"
               />
             </a>
             <p class="image-caption">
-              <a href="/turbineshaft">Turbine Shaft Design</a>
+              <a href="/turbineshaft/">Turbine Shaft Design</a>
             </p>
           </div>
           <div class="image-wrapper">
-            <img
-              src="/images/airpodsdock/thumbnail.png"
+            <OptimizedImage sizes="(max-width: 768px) 200px, 300px" source="airpodsdock/thumbnail.png"
               alt="Airpods Max Dock"
               class="image"
             />
@@ -43,15 +42,14 @@ import Layout from '../layouts/Layout.astro';
         <!-- New scroll container -->
         <div class="engineer-scroll">
           <div class="image-wrapper">
-            <a href="/biketrailer">
-              <img
-                src="/images/bike_trailer/thumbnail.png"
+            <a href="/biketrailer/">
+              <OptimizedImage sizes="(max-width: 768px) 200px, 300px" source="bike_trailer/thumbnail.png"
                 alt="Bike Trailer"
                 class="image"
               />
             </a>
             <p class="image-caption">
-              <a href="/biketrailer">Bike Trailer</a>
+              <a href="/biketrailer/">Bike Trailer</a>
             </p>
           </div>
         </div>
@@ -62,15 +60,14 @@ import Layout from '../layouts/Layout.astro';
         <!-- New scroll container -->
         <div class="engineer-scroll">
           <div class="image-wrapper">
-            <a href="/IME">
-              <img
-                src="/images/IME/thumbnail.png"
+            <a href="/IME/">
+              <OptimizedImage sizes="(max-width: 768px) 200px, 300px" source="IME/thumbnail.png"
                 alt="Manufacturing Techniques"
                 class="image"
               />
             </a>
             <p class="image-caption">
-              <a href="/IME">Manufacturing Techniques</a>
+              <a href="/IME/">Manufacturing Techniques</a>
             </p>
           </div>
         </div>
@@ -81,15 +78,14 @@ import Layout from '../layouts/Layout.astro';
         <!-- New scroll container -->
         <div class="engineer-scroll">
           <div class="image-wrapper">
-            <a href="/SFF">
-              <img
-                src="/images/sff_PC/thumbnail.png"
+            <span>
+              <OptimizedImage sizes="(max-width: 768px) 200px, 300px" source="sff_PC/thumbnail.png"
                 alt="Small Form Factor PC"
                 class="image"
               />
-            </a>
+            </span>
             <p class="image-caption">
-              <a href="/SFF">Small Form Factor PC</a>
+              Small Form Factor PC
             </p>
           </div>
         </div>
@@ -160,7 +156,7 @@ import Layout from '../layouts/Layout.astro';
     scroll-snap-align: center;
   }
 
-  .image {
+  .image-wrapper :global(.image) {
     max-width: 300px;
     height: auto;
     border: 1.5px solid transparent;
@@ -168,7 +164,7 @@ import Layout from '../layouts/Layout.astro';
     transition: border 0.2s ease-in-out;
   }
 
-  .image:hover {
+  .image-wrapper :global(.image:hover) {
     border: 1.5px solid black;
   }
 
@@ -182,7 +178,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   @media (max-width: 768px) {
-    .image {
+    .image-wrapper :global(.image) {
       max-width: 200px;
     }
   }

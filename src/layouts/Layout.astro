@@ -1,322 +1,46 @@
 ---
+import font from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
+import Dropdown from '../components/Dropdown.astro';
+import '../styles/global.css';
+
 interface Props {
-    title: string;
+  title: string;
+  description?: string;
 }
-
-const { title } = Astro.props;
+const { title, description = 'Photography, engineering projects, and work by Garrett McAvoy.' } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
-
 <!doctype html>
 <html lang="en">
-    <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-        <link rel="icon" href="/favicon.png" />
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title}</title>
-    </head>
-    <body>
-        <div class="layout-container">
-            <!-- Sidebar / Navbar -->
-            <aside class="sidebar">
-                <div class="title">
-                    <a href={`/`}>Garrett McAvoy</a>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href={`/`}>Home</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle">Portfolio</a>
-                            <ul class="dropdown-menu">
-                                <li><a href={`/photography`}>Photography</a></li>
-                                <li><a href={`/other`}>Other</a></li>
-                            </ul>
-                        </li>
-                        <li><a href={`/cv`}>CV</a></li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <!-- Main Content -->
-            <main class="main-content">
-                <slot />
-            </main>
-        </div>
-
-        <!-- Dropdown Script -->
-        <script is:client>
-            document.addEventListener("DOMContentLoaded", () => {
-                const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
-
-                dropdownToggles.forEach(toggle => {
-                    toggle.addEventListener("click", event => {
-                        event.preventDefault();
-
-                        const dropdownMenu = toggle.nextElementSibling;
-
-                        if (dropdownMenu.classList.contains("open")) {
-                            dropdownMenu.style.height = "0px";
-                            dropdownMenu.classList.remove("open");
-                            dropdownMenu.classList.remove("animation-complete");
-                        } else {
-                            dropdownMenu.style.height = `${dropdownMenu.scrollHeight}px`;
-                            dropdownMenu.classList.add("open");
-                            
-                            // Add animation-complete class after animation finishes
-                            setTimeout(() => {
-                                dropdownMenu.classList.add("animation-complete");
-                            }, 300); // Match CSS transition duration
-                        }
-
-                        document.querySelectorAll(".dropdown-menu").forEach(menu => {
-                            if (menu !== dropdownMenu) {
-                                menu.style.height = "0px";
-                                menu.classList.remove("open");
-                                menu.classList.remove("animation-complete");
-                            }
-                        });
-                    });
-
-                    document.addEventListener("click", event => {
-                        if (!toggle.parentElement.contains(event.target)) {
-                            const dropdownMenu = toggle.nextElementSibling;
-                            dropdownMenu.style.height = "0px";
-                            dropdownMenu.classList.remove("open");
-                            dropdownMenu.classList.remove("animation-complete");
-                        }
-                    });
-                });
-            });
-        </script>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#e5e5e1" />
+    <link rel="icon" href="/favicon.png" />
+    <link rel="canonical" href={canonical} />
+    <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="layout-container">
+      <aside class="sidebar">
+        <div class="site-title"><a href="/">Garrett McAvoy</a></div>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="/" aria-current={currentPath === '/' ? 'page' : undefined}>Home</a></li>
+            <Dropdown title="Portfolio" currentPath={currentPath} items={[{ name: 'Photography', href: '/photography/' }, { name: 'Other', href: '/other/' }]} />
+            <li><a href="/cv/" aria-current={currentPath === '/cv' ? 'page' : undefined}>CV</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <main id="main" class="main-content" tabindex="-1"><slot /></main>
+    </div>
+  </body>
 </html>
-
-<style is:global>
-    /* Reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box; 
-    }
-
-    /* General Styles */
-    html {
-        font-family: "EB Garamond", serif; /* Apply globally */
-        font-optical-sizing: auto;
-        background: rgb(229, 229, 225);
-        font-size: 1.1rem;
-        color: black;
-        height: 100%;
-    }
-
-    body {
-        margin: 0;
-        height: 100%;
-    }
-
-    /* Layout Container */
-    .layout-container {
-        display: flex;
-        min-height: 100vh;
-        align-items: flex-start;
-        padding: 0;
-        margin: 0;
-        justify-content: center;
-    }
-
-    /* Sidebar / Navbar Styles */
-    .sidebar {
-        width: 200px; /* Fixed width for the sidebar */
-        background-color: #2c3e5000;
-        color: #ecf0f1;
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* Distribute space between title and nav */
-        position: relative; /* Ensure it's the containing block for dropdown */
-        overflow: visible; /* Prevent clipping */
-        flex-shrink: 0;
-    }
-
-    .title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        align-self: flex-start; /* Align title to the left */
-        margin: 0; /* Ensure no margin */
-    }
-
-    .title a {
-        text-decoration: none;
-        color: #000000;
-    }
-
-    nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    nav ul li {
-        margin: 0.75rem 0;
-        position: relative;
-    }
-
-    nav ul li a {
-        text-decoration: none;
-        color: #000000;
-        display: block;
-        padding: 0rem 0.4rem;
-        border-radius: 8px;
-        position: relative;
-        z-index: 0;
-        transition: background-color 0.2s ease;
-    }
-
-    /* Pseudo-element to render hover background without changing layout */
-    nav ul li a::before {
-        content: "";
-        position: absolute;
-        inset: 0; /* matches link box by default */
-        border-radius: 8px;
-        background-color: transparent;
-        z-index: -1; /* behind text */
-        transition: background-color 0.2s ease, inset 0.2s ease;
-    }
-
-    nav ul li a:hover::before {
-        background-color: rgb(214, 214, 210);
-        inset: -0.25rem -0.35rem; /* visually taller & slightly wider */
-    }
-
-    /* Ensure dropdown items also get rounded hover boxes matching top-level size */
-    .dropdown-menu li a::before {
-        border-radius: 8px;
-        inset: 0;
-    }
-
-    .dropdown-menu li a:hover::before {
-        inset: 0;
-        border-radius: 8px;
-    }
-
-    /* Dropdown Styles */
-    .dropdown-menu {
-        width: 80%;
-        list-style: none;
-        padding: 0;
-        margin: 0rem 0 0 0;
-        overflow: hidden;
-        height: 0px;
-        background: rgb(229, 229, 225);
-        transition: height 0.3s ease;
-    }
-
-    .dropdown-menu.open {
-        height: auto;
-        overflow: hidden; /* keep hidden during animation to prevent text clipping */
-        border-bottom: 1px solid black;
-    }
-
-
-    .dropdown-menu li {
-        margin: .7rem 0; /* Reduce margin for dropdown items */
-    }
-
-    .dropdown-menu li a {
-        color: #000000;
-        padding-left: 1rem;
-    }
-
-
-    /* Main Content Styles */
-    .main-content {
-        padding: 3.25rem 0rem 0rem 0rem;
-        position: relative;
-        display: flex;
-        justify-content: center; /* Center horizontally */
-        align-items: flex-start; /* Align to top */
-        height: 100vh;
-        width: calc(100% - 200px);
-        box-sizing: border-box;
-        overflow: hide;
-        z-index: 1;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-        .layout-container {
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: auto;
-        }
-
-        .sidebar {
-            align-items: center;
-            width: 100%;
-            overflow:visible;
-            position: relative;
-            flex-direction: row;
-            justify-content: space-between; /* Changed from space-around to space-between */
-        }
-
-        nav > ul {
-            display: flex;
-            flex-direction: row;
-            margin: 0;
-            padding: 0;
-            gap: 0.5rem; /* increase spacing between items in horizontal navbar */
-        }
-
-        nav > ul > li {
-            margin: 0;
-            padding: 0;
-        }
-
-        nav > ul > li > a {
-            padding-left: .5rem;
-            padding-right: .5rem;
-        }
-
-        /* Reset styles for the dropdown menu */
-        .dropdown-menu {
-            display: block; /* Ensure it's displayed as a block element */
-            position: absolute;
-            top: calc(100% + 0.3rem); /* Move dropdown down to create gap */
-            width: 140%; /* Adjust width as needed */
-            background: rgb(229, 229, 225);
-            z-index: 999;
-            overflow: hidden; /* clip contents so they are revealed by height animation */
-        }
-
-        /* Ensure reveal effect during height animation on mobile */
-        .dropdown-menu.open {
-            overflow: hidden; /* keep clipping while expanding */
-        }
-
-        .dropdown-menu li {
-            display: block; /* Stack items vertically */
-        }
-
-        .dropdown-menu li a {
-            padding-left: .5rem;
-            padding-top: 0rem;
-            background: rgb(229, 229, 225);
-            display: block; /* Ensure links are block elements */
-        }
-
-        /* On mobile, keep hover background inside container to avoid clipping */
-        .dropdown-menu li a:hover::before {
-            inset: 0; /* do not extend outside during mobile reveal */
-        }
-
-        .main-content {
-            margin-top: 0rem;
-            padding: 1rem;
-            width: 100%;
-            height: auto;
-        }
-    }
-</style>

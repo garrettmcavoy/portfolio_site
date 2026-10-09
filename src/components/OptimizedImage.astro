@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import type { HTMLAttributes } from 'astro/types';
+import { imageSource, imageWidths } from '../lib/images';
+
+interface Props extends Omit<HTMLAttributes<'img'>, 'src' | 'width' | 'height'> {
+  source: string;
+  alt: string;
+}
+
+const { source: path, alt, sizes = '(max-width: 768px) calc(100vw - 2rem), 900px', loading = 'lazy', ...attributes } = Astro.props;
+const source = await imageSource(path);
+---
+<Image
+  src={source}
+  alt={alt}
+  widths={imageWidths(source, [320, 640, 960, 1440])}
+  sizes={sizes}
+  format="webp"
+  quality={82}
+  loading={loading}
+  decoding="async"
+  {...attributes}
+/>

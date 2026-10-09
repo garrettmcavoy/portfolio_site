@@ -2,12 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Garrett McAvoy">
+<Layout title="Other · Garrett McAvoy">
     <div class="animation-container">
         <iframe 
             src="https://garrettmcavoy.github.io/murex/" 
             title="Murex Animation"
-            class="animation-frame">
+            class="animation-frame"
+            loading="lazy">
         </iframe>
     </div>
 </Layout>
@@ -18,7 +19,7 @@ import Layout from '../layouts/Layout.astro';
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 80vh; /* Full width of the parent */
+        width: min(100%, 80vh); /* Full width of the parent */
         height: 70vh; /* Fit the full viewport height */
         margin: 0 auto; /* Center container horizontally */
         overflow: hidden; /* Prevent any overflow issues */

@@ -1,79 +1,19 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import ProjectLayout from '../layouts/ProjectLayout.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
+const images = [
+  ['finalproduct.jpg', 'Final product'],
+  ['feasetup.png', 'FEA Setup'],
+  ['maxdeflection.png', 'Maximum Deflection'],
+  ['maxstress.png', 'Maximum Stress'],
+  ['measurement_node.png', 'Measurement Point'],
+  ['verificationdeflection.png', 'Member used for hand validation — deflection'],
+  ['verificationstress.png', 'Member used for hand validation — stress'],
+  ['feaverification.jpg', 'Member used for hand validation'],
+] as const;
 ---
-
-<Layout title="Garrett McAvoy">
-  <div class="simple-page-container">
-    <div class="title">
-        <p>ME 328 - Bike Trailer</p>
-    </div>
-    <!-- Text Content -->
-    <div class="text-content">
-      
-    </div>
-
-    <!-- Placeholder Images -->
-    <div class="images">
-      <img src="../images/bike_trailer/finalproduct.jpg" alt="Final product" />
-      <img src="../images/bike_trailer/feasetup.png" alt="FEA Setup" />
-      <img src="../images/bike_trailer/maxdeflection.png" alt="Maximum Deflection" />
-      <img src="../images/bike_trailer/maxstress.png" alt="Maximum Stress" />
-      <img src="../images/bike_trailer/measurement_node.png" alt="Measurement Point" />
-      <img src="../images/bike_trailer/verificationdeflection.png" alt="Member used for hand validation" />
-      <img src="../images/bike_trailer/verificationstress.png" alt="Member used for hand validation" />
-      <img src="../images/bike_trailer/feaverification.jpg" alt="Member used for hand validation" />
-    </div>
+<ProjectLayout title="Bike Trailer" heading="ME 328 - Bike Trailer">
+  <div class="images">
+    {images.map(([file, alt], index) => <OptimizedImage source={`bike_trailer/${file}`} alt={alt} loading={index === 0 ? 'eager' : 'lazy'} />)}
   </div>
-</Layout>
-
-<style>
-  .simple-page-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: top;
-    text-align: left;
-  }
-
-  .text-content {
-    text-indent: 2em; /* Adjust as needed (e.g., 1em, 2rem, 20px) */
-    max-width: 900px;
-    padding-right: 200px;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-
-  .images {
-    display: flex;
-    padding-right: 200px;
-    max-width: 900px;
-    flex-direction: column; /* Stack images vertically */
-    gap: 1rem; /* Add spacing between images */
-  }
-
-  .images img {
-    display: block; /* Ensure images take up only their content's size */
-    max-width: 100%; /* Prevent images from exceeding container width */
-    height: auto; /* Maintain original aspect ratio */
-    border: none; /* Remove any borders */
-  }
-
-  .title {
-        font-size: 1rem;
-        font-weight: bold;
-        align-self: flex-start; /* Align title to the left */
-        margin: 0; /* Ensure no margin */
-        padding-bottom: 1rem;
-    }
-
-    @media (max-width: 768px) {
-        .text-content {
-            padding-right: 0px;
-        }
-        .images {
-            padding-right: 0px;
-        }
-        .simple-page-container {
-  }
-    }
-</style>
+</ProjectLayout>
