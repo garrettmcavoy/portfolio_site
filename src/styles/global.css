@@ -31,8 +31,8 @@ nav a:hover, nav summary:hover { background: rgb(214, 214, 210); }
 nav summary { list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
 nav summary::marker { content: ''; }
-.dropdown-reveal { overflow: hidden; }
-.dropdown-menu { width: 100%; padding-bottom: .25rem; border-bottom: 1px solid #000; }
+.dropdown-reveal { overflow: hidden; border-bottom: 1px solid #000; }
+.dropdown-menu { width: 100%; padding-bottom: .25rem; }
 .dropdown-menu a { padding-left: 1rem; }
 .main-content { padding: 3.25rem 0 0; display: flex; justify-content: center; align-items: flex-start; min-width: 0; width: calc(100% - 200px); min-height: 100vh; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -47,7 +47,7 @@ nav summary::marker { content: ''; }
   .dropdown details { white-space: nowrap; }
   .dropdown details[open] { display: flex; align-items: baseline; }
   .dropdown summary { display: inline-block; vertical-align: baseline; }
-  .dropdown-reveal { border-right: 1px solid #000; }
+  .dropdown-reveal { border-bottom: 0; border-right: 1px solid #000; }
   .dropdown-menu { display: inline-flex; gap: 1rem; vertical-align: baseline; width: auto; margin-left: 1rem; padding: 0 .8rem 0 0; border: 0; }
   details:not([open]) .dropdown-reveal { display: none; }
   .dropdown-menu li { margin: 0; }
