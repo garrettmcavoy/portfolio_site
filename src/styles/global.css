@@ -17,18 +17,20 @@ html { font-family: 'EB Garamond', Georgia, serif; font-optical-sizing: auto; ba
 body { min-height: 100vh; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+/* Modal autofocus and restored focus should only draw a ring for keyboard use. */
+.photography-container[data-input-mode="pointer"] :focus,
+.lightbox[data-input-mode="pointer"] :focus { outline: none; }
 .layout-container { display: flex; align-items: flex-start; min-height: 100vh; }
 .sidebar { width: 200px; padding: 1rem; flex-shrink: 0; position: relative; z-index: 2; }
 .site-title { font-size: 1.25rem; font-weight: bold; white-space: nowrap; }
 .site-title a { text-decoration: none; }
 nav ul { list-style: none; }
 nav li { margin: .75rem 0; position: relative; }
-nav a, nav summary { display: block; padding: .15rem .4rem; text-decoration: none; border-radius: 8px; cursor: pointer; }
+nav a, nav summary { display: block; padding: .15rem 0; text-decoration: none; border-radius: 8px; cursor: pointer; }
 nav a:hover, nav summary:hover, nav a[aria-current='page'] { background: rgb(214, 214, 210); }
 nav summary { list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
-nav summary::after { content: '›'; display: inline-block; margin-left: .4rem; }
-nav details[open] > summary::after { transform: rotate(90deg); }
+nav summary::marker { content: ''; }
 .dropdown-menu { width: 100%; padding-bottom: .25rem; border-bottom: 1px solid #000; }
 .dropdown-menu a { padding-left: 1rem; }
 .main-content { padding: 3.25rem 0 0; display: flex; justify-content: center; align-items: flex-start; min-width: 0; width: calc(100% - 200px); min-height: 100vh; }
@@ -37,10 +39,10 @@ nav details[open] > summary::after { transform: rotate(90deg); }
 .skip-link:focus { transform: translateY(0); }
 @media (max-width: 768px) {
   .layout-container { flex-direction: column; }
-  .sidebar { width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
-  nav > ul { display: flex; gap: .5rem; }
+  .sidebar { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+  nav > ul { display: flex; gap: 1rem; }
   nav > ul > li { margin: 0; }
-  .dropdown-menu { position: absolute; top: calc(100% + .3rem); right: 0; width: 9rem; padding: .25rem; background: rgb(229, 229, 225); box-shadow: 0 4px 12px rgb(0 0 0 / .08); }
+  .dropdown-menu { position: absolute; top: calc(100% + .3rem); left: 0; width: 9rem; padding: .25rem; background: rgb(229, 229, 225); box-shadow: 0 4px 12px rgb(0 0 0 / .08); }
   .dropdown-menu a { padding: .25rem .5rem; }
   .main-content { width: 100%; min-height: 0; padding: 1rem; }
 }

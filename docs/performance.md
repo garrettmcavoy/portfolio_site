@@ -30,4 +30,4 @@ Initial photo bytes fell by approximately 98.5–98.7%. These are single-run loc
 
 ## Verification
 
-`astro check`: zero errors, warnings, or hints. Static production build succeeds. Ten Chromium checks cover desktop and mobile loading, scrolling, lightbox controls and focus restoration, routes/links, layout overflow, and JavaScript-disabled use. The gallery-loading test enforces an initial image payload budget of 1 MB and prevents eager loading of all 38 originals. Desktop and mobile screenshots were visually inspected.
+`astro check`: zero errors, warnings, or hints. Static production build succeeds. Twenty-eight Chromium and WebKit checks cover desktop and mobile loading, scrolling, lightbox controls and focus restoration, routes/links, layout overflow, JavaScript-disabled use, pointer versus keyboard focus styling, and navigation alignment. The gallery-loading test enforces an initial image payload budget of 1 MB and prevents eager loading of all 38 originals. Desktop and mobile screenshots were visually inspected.

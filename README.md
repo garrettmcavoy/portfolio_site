@@ -15,7 +15,7 @@ npm run dev
 ```sh
 npm run check
 npm run build
-npx playwright install chromium
+npx playwright install chromium webkit
 npm test
 npm run preview
 ```
@@ -39,6 +39,6 @@ Only the first photograph is eager/high priority. Other images are kept in templ
 
 ## Deployment
 
-Pull requests run type checks, a static build, and Chromium browser tests. Pushes to `master` run the same checks and deploy through the existing GitHub Pages workflow. Build-time image transforms are cached in CI. The site needs no application server, runtime image service, or database.
+Pull requests run type checks, a static build, and Chromium/WebKit browser tests. Pushes to `master` run the same checks and deploy through the existing GitHub Pages workflow. Build-time image transforms are cached in CI. The site needs no application server, runtime image service, or database.
 
 See [the optimization measurements](docs/performance.md) for a local before/after comparison.

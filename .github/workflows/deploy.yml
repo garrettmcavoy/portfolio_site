@@ -37,7 +37,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Install browser
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
       - name: Test production site
         run: npm test
       - name: Upload Pages artifact

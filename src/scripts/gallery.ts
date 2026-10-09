@@ -8,6 +8,15 @@ function revealPhoto(link: Element) {
 }
 
 if (gallery && dialog && enlarged) {
+  function setInputMode(mode: 'pointer' | 'keyboard') {
+    gallery!.dataset.inputMode = mode;
+    dialog!.dataset.inputMode = mode;
+  }
+  setInputMode('pointer');
+  document.addEventListener('pointerdown', () => setInputMode('pointer'), { capture: true });
+  document.addEventListener('keydown', event => {
+    if (!event.metaKey && !event.ctrlKey && !event.altKey) setInputMode('keyboard');
+  }, { capture: true });
   // Observe viewport visibility, including clipping inside each horizontal strip.
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
@@ -48,8 +57,9 @@ if (gallery && dialog && enlarged) {
     document.body.style.overflow = previousOverflow;
     enlarged.removeAttribute('srcset');
     enlarged.removeAttribute('src');
-    opener?.focus({ preventScroll: true });
     dialog.close();
+    // The page is inert until the dialog closes, so restore focus afterward.
+    opener?.focus({ preventScroll: true });
     opener = null;
   }
   dialog.addEventListener('click', closeLightbox);

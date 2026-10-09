@@ -78,3 +78,34 @@ test('navigation and photographs work without JavaScript', async ({ browser, bas
   expect(response.headers()['content-type']).toContain('image/webp');
   await context.close();
 });
+
+test('pointer lightbox interaction does not leave focus boxes', async ({ page }) => {
+  await page.goto('/photography/');
+  const first = page.locator('[data-photo]').first();
+  await first.click();
+  const close = page.getByRole('button', { name: 'Close photograph' });
+  await expect(close).toBeVisible();
+  expect(await close.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  expect(await close.evaluate(el => getComputedStyle(el).boxShadow)).toBe('none');
+  await close.click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(first).toBeFocused();
+  expect(await first.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  expect(await page.locator('.photo-scroll').first().evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  await page.keyboard.press('Enter');
+  await expect(close).toBeFocused();
+  expect(await close.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+  await page.keyboard.press('Escape');
+  await expect(first).toBeFocused();
+  expect(await first.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+});
+
+test('navigation text aligns with the name and Portfolio has no arrow', async ({ page }) => {
+  await page.goto('/photography/');
+  await page.evaluate(() => document.fonts.ready);
+  const titleLeft = await page.locator('.site-title').evaluate(el => el.getBoundingClientRect().left);
+  const homeLeft = await page.getByRole('link', { name: 'Home', exact: true }).evaluate(el => el.getBoundingClientRect().left + parseFloat(getComputedStyle(el).paddingLeft));
+  expect(Math.abs(titleLeft - homeLeft)).toBeLessThan(1);
+  const portfolio = page.locator('nav summary');
+  expect(await portfolio.evaluate(el => getComputedStyle(el, '::after').content)).toBe('none');
+});

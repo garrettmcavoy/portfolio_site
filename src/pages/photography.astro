@@ -34,6 +34,6 @@ import { photoYears } from '../data/photography';
   .lightbox[open] { display: grid; place-items: center; }
   .lightbox::backdrop { background: rgb(0 0 0 / .88); }
   .lightbox-image { display: block; max-width: 90vw; max-height: 86dvh; width: auto; height: auto; object-fit: contain; cursor: zoom-out; }
-  .lightbox-close { position: absolute; top: .5rem; right: 1rem; width: 44px; height: 44px; border: 0; background: transparent; color: white; font: 2rem/1 sans-serif; cursor: pointer; }
+  .lightbox-close { appearance: none; -webkit-appearance: none; box-shadow: none; border-radius: 0; position: absolute; top: .5rem; right: 1rem; width: 44px; height: 44px; border: 0; background: transparent; color: white; font: 2rem/1 sans-serif; cursor: pointer; }
   @media (max-width: 768px) { .photography-container { --photo-height: 300px; } }
 </style>
