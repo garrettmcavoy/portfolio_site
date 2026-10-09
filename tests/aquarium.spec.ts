@@ -157,6 +157,100 @@ test('iPhone artwork fills below the system top edge without overflowing the scr
   }
 });
 
+test('other iPhone display families fit with zero Safari safe-area insets', async ({ browser, baseURL }) => {
+  const displays = [
+    { width: 375, height: 667, top: 20, density: 2 },
+    { width: 360, height: 780, top: 50, density: 3 },
+    { width: 390, height: 844, top: 47, density: 3 },
+    { width: 393, height: 852, top: 59, density: 3 },
+    { width: 414, height: 896, top: 48, density: 2 },
+    { width: 414, height: 896, top: 44, density: 3 },
+    { width: 428, height: 926, top: 47, density: 3 },
+    { width: 430, height: 932, top: 59, density: 3 },
+    { width: 440, height: 956, top: 62, density: 3 },
+    { width: 420, height: 912, top: 68, density: 3 },
+  ];
+  for (const display of displays) {
+    const context = await browser.newContext({
+      baseURL,
+      screen: { width: display.width, height: display.height },
+      viewport: { width: display.width, height: display.height - display.top - 98 },
+      deviceScaleFactor: display.density,
+      isMobile: true,
+      hasTouch: true,
+      reducedMotion: 'reduce',
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1',
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto('/');
+      const tank = page.locator('[data-aquarium]');
+      await expect(tank).toHaveAttribute('data-ready', '');
+      await expect.poll(() => tank.evaluate(element => {
+        const rect = element.getBoundingClientRect();
+        return { top: rect.y, width: rect.width, height: rect.height, canvasHeight: element.querySelector('canvas')!.height };
+      })).toEqual({ top: 0, width: display.width, height: display.height - display.top, canvasHeight: Math.floor((display.height - display.top) * 1.5) });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(display.width);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
+test('iPhone artwork follows browser page zoom without changing physical screen bounds', async ({ browser, baseURL }) => {
+  for (const zoom of [0.8, 1.25]) {
+    const width = Math.round(402 * zoom);
+    const context = await browser.newContext({
+      baseURL,
+      screen: { width: 402, height: 874 },
+      viewport: { width, height: Math.round(714 * zoom) },
+      deviceScaleFactor: 2,
+      isMobile: true,
+      reducedMotion: 'reduce',
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1',
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto('/');
+      const tank = page.locator('[data-aquarium]');
+      await expect(tank).toHaveAttribute('data-ready', '');
+      await expect.poll(() => tank.evaluate(element => element.getBoundingClientRect().height)).toBeCloseTo(812 * width / 402, 1);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
+test('browser-provided safe areas take priority over iPhone display fallbacks', async ({ browser, browserName, baseURL }) => {
+  test.skip(browserName !== 'chromium', 'Native inset overrides require the Chromium emulation protocol.');
+  for (const display of [
+    { width: 402, height: 874, top: 64, maxTop: 64, expectedHeight: 874 },
+    { width: 402, height: 874, top: 0, maxTop: 66, expectedHeight: 808 },
+    { width: 450, height: 1000, top: 0, maxTop: 66, expectedHeight: 934 },
+    { width: 450, height: 1000, top: 0, maxTop: 0, expectedHeight: 840 },
+  ]) {
+    const context = await browser.newContext({
+      baseURL,
+      screen: { width: display.width, height: display.height },
+      viewport: { width: display.width, height: display.height - 160 },
+      isMobile: true,
+      reducedMotion: 'reduce',
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1',
+    });
+    try {
+      const page = await context.newPage();
+      const session = await context.newCDPSession(page);
+      await session.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: display.top, topMax: display.maxTop } });
+      await page.goto('/');
+      const tank = page.locator('[data-aquarium]');
+      await expect(tank).toHaveAttribute('data-ready', '');
+      await expect.poll(() => tank.evaluate(element => element.getBoundingClientRect().height)).toBe(display.expectedHeight);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
 test('top-right icons replace old controls and background choices persist', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');

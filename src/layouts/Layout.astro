@@ -2,6 +2,7 @@
 import font from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
 import Dropdown from '../components/Dropdown.astro';
 import { backgroundColors } from '../scripts/aquarium-backgrounds';
+import { iphoneTopInsets } from '../scripts/aquarium-display';
 import '../styles/global.css';
 
 interface Props {
@@ -31,7 +32,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         }
       } catch { /* Optional storage; keep the default reef color. */ }
     </script>}
-    {immersive && <script is:inline>
+    {immersive && <script is:inline define:vars={{ iphoneTopInsets }}>
       // Some iPhone Safari layouts report zero safe areas and a 100lvh that
       // stops inside the toolbar. Cover the display below its system top edge.
       // Restrict this to phones: an iPad window can occupy part of its screen.
@@ -47,12 +48,30 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           const layoutWidth = document.documentElement.clientWidth || innerWidth;
           if (screenWidth > 0 && layoutWidth > 0) {
             const scale = layoutWidth / screenWidth;
-            // Safari on the 402×874 display starts the page below a 62px
-            // system status region but reports safe-area-inset-top as zero.
-            // Only compensate when that region is outside the page; a full
-            // viewport or landscape view already includes the available area.
-            const excludedTop = !landscape && shortSide === 402 && longSide === 874
-              && innerHeight / scale < screenHeight - 1 ? 62 : 0;
+            const root = document.documentElement;
+            // Read actual padding: some Safari versions return zero when
+            // environment variables are read through CSS custom properties.
+            const probe = document.querySelector('[data-aquarium-safe-area]');
+            const style = probe ? getComputedStyle(probe) : null;
+            const safeTop = parseFloat(style?.paddingTop || '0') || 0;
+            const maxSafeTop = parseFloat(style?.paddingBottom || '0') || 0;
+            const displayKey = `${shortSide}x${longSide}`;
+            // XR/11 and XS Max/11 Pro Max share a screen size, but have
+            // different pixel densities and system top regions.
+            const fallbackTop = displayKey === '414x896' && devicePixelRatio === 2
+              ? 48 : iphoneTopInsets[displayKey];
+            const systemTop = maxSafeTop > 0 ? maxSafeTop / scale : fallbackTop;
+            // A positive current inset means the top region is already inside
+            // the page. Landscape and full-height views need no subtraction.
+            const topIsExcluded = !landscape && safeTop === 0
+              && innerHeight / scale < screenHeight - 1;
+            if (topIsExcluded && systemTop === undefined) {
+              // For unfamiliar displays, keep Safari's own viewport sizing
+              // until it supplies a usable inset instead of guessing pixels.
+              root.style.removeProperty('--aquarium-screen-height');
+              return;
+            }
+            const excludedTop = topIsExcluded ? systemTop : 0;
             document.documentElement.style.setProperty('--aquarium-screen-height', `${(screenHeight - excludedTop) * scale}px`);
           }
         };
@@ -73,6 +92,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
   </head>
   <body class:list={{ 'aquarium-home': immersive }}>
+    {immersive && <div class="aquarium-safe-area-probe" data-aquarium-safe-area aria-hidden="true"></div>}
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="layout-container">
       <aside class="sidebar">

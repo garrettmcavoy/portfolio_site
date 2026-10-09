@@ -40,6 +40,7 @@ nav summary::marker { content: ''; }
 .skip-link:focus { transform: translateY(0); }
 /* Home navigation sits over the aquarium instead of reserving a sidebar. */
 .aquarium-root { background: var(--aquarium-chrome, #001b45); overscroll-behavior: none; }
+.aquarium-safe-area-probe { position: absolute; top: 0; left: 0; width: 0; height: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-max-inset-top, 0px); visibility: hidden; pointer-events: none; }
 .aquarium-home { min-height: 100dvh; overflow: hidden; background: var(--aquarium-chrome, #001b45); color: #fff; }
 .aquarium-home .layout-container { min-height: 100dvh; }
 .aquarium-home .sidebar { position: absolute; top: 0; left: 0; padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); pointer-events: none; text-shadow: 0 1px 5px rgb(0 0 0 / .6); }
