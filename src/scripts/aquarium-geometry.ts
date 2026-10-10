@@ -1,4 +1,4 @@
-import { BufferGeometry, Float32BufferAttribute } from 'three';
+import { Box3, BufferGeometry, Float32BufferAttribute, Vector3 } from 'three';
 
 export interface FishPart {
   vertices: number[];
@@ -24,4 +24,17 @@ export function createFishGeometry(part: FishPart, materialIndex: number) {
   // Shared vertices keep the original low-poly surface smoothly shaded.
   geometry.computeVertexNormals();
   return geometry;
+}
+
+// A stable contact envelope covers both original bend poses, fin pivots, and
+// the tail wave. Tail beats must not change a fish's avoidance decisions.
+export function createSwimmingBounds(parts: readonly { vertices: readonly number[] }[]) {
+  const bounds = new Box3(), point = new Vector3();
+  for (const part of parts) for (let i = 0; i < part.vertices.length; i += 3) {
+    point.set(part.vertices[i], part.vertices[i+1], part.vertices[i+2]);
+    bounds.expandByPoint(point);
+    point.z *= -1;
+    bounds.expandByPoint(point);
+  }
+  return bounds.expandByScalar(.1);
 }

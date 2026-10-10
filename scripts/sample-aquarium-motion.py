@@ -41,6 +41,9 @@ wf(OBJ + 0x7238, -1)  # Local forward vector: all original fish face left.
 wi(0x425fc0, len(species))
 wi(0x428e50, 127)  # Static C++ cleanup registrations are unnecessary in isolated memory.
 for i, name in enumerate(species):
+    # The partner scan skips unselected fish. The PE default enables only the
+    # first slot; enable every sampled species so their reactions are coupled.
+    u.mem_write(0x421da8 + 2*i, struct.pack('<H', 1))
     mat = 0x1100000 + i * 0x1000
     identity(mat)
     wi(OBJ + 0x7108 + 4*i, mat)

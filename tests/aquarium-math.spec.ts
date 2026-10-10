@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
-import { Box3, Matrix4, Quaternion, ShapeUtils, Vector2, Vector3 } from 'three';
+import { Box3, Euler, Matrix4, Quaternion, ShapeUtils, Vector2, Vector3 } from 'three';
 import sharp from 'sharp';
 import { createReefBarrier, type ReefTriangle } from '../src/scripts/aquarium-reef';
 import { createSwimmingSampler } from '../src/scripts/aquarium-motion';
 import { crossfadeLoop } from '../src/scripts/aquarium-audio';
-import { createFishGeometry } from '../src/scripts/aquarium-geometry';
+import { createFishGeometry, createSwimmingBounds } from '../src/scripts/aquarium-geometry';
 import { createFishAvoidance, type SwimmingBody } from '../src/scripts/aquarium-avoidance';
 
 test('live avoidance keeps fish clear of each other and opaque reef surfaces through two recorded cycles', async ({}, info) => {
@@ -16,14 +16,7 @@ test('live avoidance keeps fish clear of each other and opaque reef surfaces thr
   const decoded = gunzipSync(readFileSync('public/aquarium/motion.dat'));
   const swimming = createSwimmingSampler(metadata, new Int16Array(decoded.buffer, decoded.byteOffset, decoded.byteLength/2));
   const bodies: SwimmingBody[] = metadata.tracks.map(({ species }: { species: string }) => {
-    const bounds = new Box3();
-    for (const part of models[species].meshes) for (let i = 0; i < part.vertices.length; i += 3) {
-      const [x, y, z] = part.vertices.slice(i, i+3);
-      bounds.expandByPoint(new Vector3(x, y, -z));
-      // Bend direction can be mirrored; include both extrema and the tail wave.
-      bounds.expandByPoint(new Vector3(x, y, z));
-    }
-    bounds.expandByScalar(.04);
+    const bounds = createSwimmingBounds(models[species].meshes);
     return { position: new Vector3(), orientation: new Quaternion(), nextPosition: new Vector3(), nextOrientation: new Quaternion(), bounds };
   });
   const reefs = await Promise.all(['BKGRND', 'TANKDISTANCE'].map(async name => {
@@ -49,15 +42,27 @@ test('live avoidance keeps fish clear of each other and opaque reef surfaces thr
   }));
   const avoid = createFishAvoidance(reefs), matrix = new Matrix4(), scale = new Vector3(1, 1, 1);
   const failures: string[] = [];
-  let finite = true;
+  let finite = true, maximumStep = 0, maximumTurn = 0, longestStill = 0, minimumUp = 1;
+  const previousPositions = bodies.map(() => new Vector3());
+  const previousRotations = bodies.map(() => new Quaternion());
+  const stillFrames = bodies.map(() => 0);
   for (let step = 0; step < 24000; step++) {
     bodies.forEach((body, i) => {
       swimming(metadata.tracks[i].species, step/20, body.position, body.orientation);
-      swimming(metadata.tracks[i].species, step/20+.8, body.nextPosition, body.nextOrientation);
+      swimming(metadata.tracks[i].species, step/20+1.6, body.nextPosition, body.nextOrientation);
     });
     avoid(bodies, step ? .05 : 0);
-    const boxes = bodies.map(body => {
+    const boxes = bodies.map((body, i) => {
+      if (step) {
+        const distance = body.position.distanceTo(previousPositions[i]);
+        maximumStep = Math.max(maximumStep, distance);
+        maximumTurn = Math.max(maximumTurn, body.orientation.angleTo(previousRotations[i]));
+        stillFrames[i] = distance < .0005 && Math.abs(body.position.x) < 6 ? stillFrames[i]+1 : 0;
+        longestStill = Math.max(longestStill, stillFrames[i]);
+      }
+      previousPositions[i].copy(body.position); previousRotations[i].copy(body.orientation);
       finite &&= Number.isFinite(body.position.lengthSq());
+      minimumUp = Math.min(minimumUp, new Vector3(0, 1, 0).applyQuaternion(body.orientation).y);
       matrix.compose(body.position, body.orientation, scale);
       return body.bounds.clone().applyMatrix4(matrix);
     });
@@ -70,6 +75,12 @@ test('live avoidance keeps fish clear of each other and opaque reef surfaces thr
   }
   expect(finite).toBe(true);
   expect(failures).toEqual([]);
+  // Bounds on rendered movement also catch correction snaps and loop jumps;
+  // collision-only assertions allowed the previous visible stuttering.
+  expect(maximumStep).toBeLessThanOrEqual(1.8/20+1e-8);
+  expect(maximumTurn).toBeLessThanOrEqual(1.2/20+1e-6);
+  expect(longestStill/20).toBeLessThan(1);
+  expect(minimumUp).toBeGreaterThan(.97);
 });
 
 test('avoidance resolves coincident fish and starts moving before a predicted contact', ({}, info) => {
@@ -88,6 +99,67 @@ test('avoidance resolves coincident fish and starts moving before a predicted co
   for (let i = 0; i < boxes.length; i++) for (let j = i+1; j < boxes.length; j++) expect(boxes[i].intersectsBox(boxes[j])).toBe(false);
 });
 
+
+test('head-on passes stay continuous and do not change passing side mid-encounter', ({}, info) => {
+  test.skip(info.project.name !== 'desktop', 'Simulation only needs one run');
+  const bounds = new Box3(new Vector3(-.5, -.3, -.1), new Vector3(.5, .3, .1));
+  const bodies: SwimmingBody[] = [0, 1].map(() => ({
+    bounds, position: new Vector3(), nextPosition: new Vector3(),
+    orientation: new Quaternion(), nextOrientation: new Quaternion(),
+  }));
+  const avoid = createFishAvoidance(), previous = bodies.map(() => new Vector3());
+  let passingSide = 0, maximumStep = 0;
+  for (let frame = 0; frame < 900; frame++) {
+    const time = frame/60;
+    bodies.forEach((body, i) => {
+      const direction = i ? -1 : 1;
+      body.position.set(direction*(-2+time*.35), 0, 0);
+      body.nextPosition.set(direction*(-2+(time+1.6)*.35), 0, 0);
+      body.orientation.setFromAxisAngle(new Vector3(0, 1, 0), i ? 0 : Math.PI);
+      body.nextOrientation.copy(body.orientation);
+    });
+    avoid(bodies, frame ? 1/60 : 0);
+    if (frame) bodies.forEach((body, i) => { maximumStep = Math.max(maximumStep, body.position.distanceTo(previous[i])); });
+    const separation = bodies[1].position.clone().sub(bodies[0].position);
+    const depth = Math.abs(separation.z) > .04 ? separation.z : separation.y;
+    if (Math.abs(bodies[1].position.x-bodies[0].position.x) < 1.2 && Math.abs(depth) > .04) {
+      passingSide ||= Math.sign(depth);
+      expect(Math.sign(depth)).toBe(passingSide);
+    }
+    const boxes = bodies.map(body => {
+      const matrix = new Matrix4().compose(body.position, body.orientation, new Vector3(1, 1, 1));
+      return bounds.clone().applyMatrix4(matrix);
+    });
+    expect(boxes[0].intersectsBox(boxes[1])).toBe(false);
+    bodies.forEach((body, i) => previous[i].copy(body.position));
+  }
+  expect(passingSide).not.toBe(0);
+  expect(maximumStep).toBeLessThanOrEqual(1.8/60+1e-8);
+});
+
+test('motor recovery is consistent at 30, 60, and 120 frames per second', ({}, info) => {
+  test.skip(info.project.name !== 'desktop', 'Simulation only needs one run');
+  const endpoints = [30, 60, 120].map(hz => {
+    const body: SwimmingBody = {
+      bounds: new Box3(new Vector3(-.5, -.3, -.1), new Vector3(.5, .3, .1)),
+      position: new Vector3(), nextPosition: new Vector3(),
+      orientation: new Quaternion(), nextOrientation: new Quaternion(),
+    };
+    const avoid = createFishAvoidance();
+    for (let frame = 0; frame <= hz*10; frame++) {
+      body.position.set(frame/hz*.6, 0, 0); body.nextPosition.set((frame/hz+1.6)*.6, 0, 0);
+      body.orientation.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); body.nextOrientation.copy(body.orientation);
+      avoid([body], frame ? 1/hz : 0);
+    }
+    const position = body.position.clone(), rotation = body.orientation.clone();
+    // Resizes and still frames must not advance or reset the swimming motor.
+    body.position.set(6, 0, 0); avoid([body], 0);
+    expect(body.position.distanceTo(position)).toBeLessThan(1e-8);
+    expect(body.orientation.angleTo(rotation)).toBeLessThan(1e-6);
+    return position;
+  });
+  for (const point of endpoints) expect(point.distanceTo(endpoints[1])).toBeLessThan(.04);
+});
 
 test('reef clearance respects transparent openings and preserves the side of visible coral', ({}, info) => {
   test.skip(info.project.name !== 'desktop', 'Pure calculations only need one run');
@@ -110,19 +182,52 @@ test('reef clearance respects transparent openings and preserves the side of vis
     avoid([fish], .05);
     expect(bounds.min.z+fish.position.z).toBeGreaterThanOrEqual(.07999);
   }
-  // It can move to the other side through the clear upper-right opening.
-  for (let step = 0; step < 100; step++) {
-    fish.position.set(1, 1, -1); fish.nextPosition.copy(fish.position);
+  // Swim up into the opening, then cross the plane there. A motor follows a
+  // continuous route rather than adopting an instantly teleported source pose.
+  const openingRoute = (time: number, target: Vector3) => target.set(1,
+    -1+Math.min(2, time*.4), 1-Math.min(2, Math.max(0, time-5)*.4));
+  for (let step = 0; step < 240; step++) {
+    openingRoute(step/20, fish.position); openingRoute(step/20+1.6, fish.nextPosition);
     avoid([fish], .05);
+    const box = bounds.clone().applyMatrix4(new Matrix4().compose(fish.position, fish.orientation, new Vector3(1, 1, 1)));
+    expect(box.min.z < reef.depth && box.max.z > reef.depth && reef.overlapsFootprint(box)).toBe(false);
   }
   expect(fish.position.z+fish.bounds.max.z).toBeLessThan(-.08);
   // A broad turn cannot fit between layers; it must sidestep into open water.
+  fish.orientation.identity(); fish.nextOrientation.identity();
   fish.bounds = new Box3(new Vector3(-.2, -.2, -1), new Vector3(.2, .2, 1));
   fish.position.set(1, -1, -.75); fish.nextPosition.copy(fish.position);
   const layers = [reef, createReefBarrier(-1.5, triangles)];
   createFishAvoidance(layers)([fish], 0);
   const box = fish.bounds.clone().translate(fish.position);
   for (const layer of layers) expect(box.min.z < layer.depth && box.max.z > layer.depth && layer.overlapsFootprint(box)).toBe(false);
+});
+
+test('swimming envelopes contain the original animated fin poses', ({}, info) => {
+  test.skip(info.project.name !== 'desktop', 'Geometry only needs one run');
+  const models = JSON.parse(readFileSync('public/aquarium/scene.json', 'utf8'));
+  for (const [name, model] of Object.entries(models) as [string, any][]) {
+    const body = model.meshes.find((part: any) => part.name === 'fishbody');
+    const bend = model.meshes.find((part: any) => part.name === 'fishbend');
+    if (!body || !bend) continue;
+    const bounds = createSwimmingBounds(model.meshes);
+    for (const fin of model.meshes.filter((part: any) => ['leftfin', 'rightfin'].includes(part.name))) {
+      const attach = fin.name === 'leftfin' ? 78 : 157;
+      const pivot = new Vector3(fin.vertices[0], fin.vertices[1], -body.vertices[attach*3+2]);
+      for (let step = 0; step <= 40; step++) {
+        const steering = -1+step/20, amount = -steering;
+        const anchor = pivot.clone();
+        anchor.z = -(body.vertices[attach*3+2]+(bend.vertices[attach*3+2]-body.vertices[attach*3+2])*amount);
+        const rotation = new Quaternion().setFromEuler(new Euler(0,
+          -(steering+(fin.name === 'leftfin' ? .3 : -.3)), -steering/3, 'ZYX'));
+        for (let vertex = 0; vertex < fin.vertices.length; vertex += 3) {
+          const point = new Vector3(fin.vertices[vertex], fin.vertices[vertex+1], -fin.vertices[vertex+2])
+            .sub(pivot).applyQuaternion(rotation).add(anchor);
+          expect(bounds.containsPoint(point), `${name}: ${fin.name}, steering ${steering}`).toBe(true);
+        }
+      }
+    }
+  }
 });
 
 test('original fish surfaces have outward smooth normals and opaque texture interiors', async ({ page }, info) => {

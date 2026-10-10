@@ -3,13 +3,16 @@ import { Euler, Quaternion, Vector3 } from 'three';
 interface Track { species: string; offset: number; frames: number; start: number; join: number }
 interface Recording { hz: number; stride: number; tracks: Track[] }
 
+// Refresh the index and packed samples together after regenerating paths.
+const recordingVersion = 'all-active-112-1';
+
 export async function loadSwimming() {
   const [metadata, response] = await Promise.all([
-    fetch('/aquarium/motion.json').then(async response => {
+    fetch(`/aquarium/motion.json?v=${recordingVersion}`).then(async response => {
       if (!response.ok) throw new Error('Aquarium motion unavailable');
       return response.json() as Promise<Recording>;
     }),
-    fetch('/aquarium/motion.dat'),
+    fetch(`/aquarium/motion.dat?v=${recordingVersion}`),
   ]);
   if (!response.ok || !response.body) throw new Error('Aquarium motion unavailable');
   const decoded = await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();

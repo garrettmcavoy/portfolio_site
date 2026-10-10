@@ -80,15 +80,41 @@ The starting state and seed are reconstructed. Individual recordings loop after
 several minutes at an offscreen point; the yellow tang uses a one-second blend
 between nearby poses. Playback shortens near-stationary segments and limits tilt
 to keep fish moving and upright. Because the independent loops no longer share
-the original simulation's timing, the browser adds live avoidance: it looks .8 s
-ahead and separates envelopes containing the animated body and fins in 3D.
-Depth separation is preferred, with vertical/lateral sidesteps for head-on turns.
+the original simulation's timing, the browser adds live avoidance. It plans 1.6 s
+before a contact and holds the chosen vertical/depth passing side throughout an
+encounter. A motor follows those goals with bounded speed, acceleration, and
+turning; stopping-distance limits begin yielding before contact. The fish face
+their swimming direction, with a smoothed turn contribution to the original body
+bend. Original fin pivots, upright limits, and the 14-radian/second tail wave remain.
+
+Contact envelopes are fixed across tail beats and cover both body poses and the
+animated fins. Initial placement may separate overlapping fish before rendering;
+subsequent frames only advance through clear poses. A blocked component yields
+while tangential swimming continues, and a held escape arc prevents prolonged
+stalls. This replaces the previous per-frame position projection, whose passing
+axis could flip and whose reef sidestep could move a fish abruptly. Return goals
+are integrated per second rather than decaying once per frame.
+
 Both reef layers use masks built from their triangulated geometry and texture
 alpha. Fish retain their side of visible coral until they reach open water;
 turns too broad for the gap between layers sidestep around the coral. The
 caustic overlays use separate stencil masks for the near and distant reef,
 so their moving shadows cannot paint over fish in front of the coral.
-This avoidance is reconstructed, rather than a port of the original logic.
+This avoidance is reconstructed, rather than a literal port of the original logic.
+
+The isolated 1.1.2 partner routine (0x4079c2–0x407db4) checks active fish slots,
+marks proximity within 4 source units, and reacts within 2 units for compatible
+depth lanes. Its X/Y displacement scales with the swimming timestep divided by
+centre-distance cubed; it does not project animated 3D bounding boxes apart.
+It also holds speed targets of .3 or 1.0 for 1000 ms, approaches target speed at
+.1 units/second, and sets persistent vertical/turning targets. These observations
+motivate gentle reactions and held maneuvers, not an assertion that the original
+never intersects another fish. In a reproducible 60-second isolated run with all
+seven active slots, the largest partner correction was .01738 source units per
+60 Hz step. The sampler now explicitly enables all seven slots: the reference's
+mapped-image defaults enable only slot zero, which previously omitted most partner
+reactions from the recordings. The recordings were regenerated with that fix.
+
 The two bubble strands use the recovered quad
 positions, depth, UVs, and separate scroll rates behind the near reef. Their
 upper edges extend beyond the tallest viewport, preserving the original tilt
@@ -111,4 +137,5 @@ Browser checks cover animated rendering, reduced-motion changes, and the
 static fallback, saved backgrounds, icon controls, default bubble audio, and glass-tap/mute behavior in
 Chromium and WebKit, on desktop and narrow viewports. Calculation checks cover
 long-running fish movement, collision clearance across 20 minutes and dense
-overlapping starting poses, and the audio loop seam.
+overlapping starting poses, bounded movement/turning, stable close passes,
+recovery at 30/60/120 Hz, animated fin containment, and the audio loop seam.

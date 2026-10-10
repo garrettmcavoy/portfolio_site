@@ -1,5 +1,5 @@
 import {
-  AlwaysStencilFunc, AmbientLight, Box3, BufferGeometry, Color, DirectionalLight, DoubleSide, EqualStencilFunc,
+  AlwaysStencilFunc, AmbientLight, BufferGeometry, Color, DirectionalLight, DoubleSide, EqualStencilFunc,
   Float32BufferAttribute, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial,
   PerspectiveCamera, PlaneGeometry, Quaternion, RepeatWrapping, ReplaceStencilOp, Scene,
   ShaderMaterial, ShapeUtils, SRGBColorSpace, TextureLoader, Vector2,
@@ -8,7 +8,7 @@ import {
 import { loadSwimming } from './aquarium-motion';
 import { createAquariumAudio } from './aquarium-audio';
 import { backgrounds, backgroundColors, type Background } from './aquarium-backgrounds';
-import { createFishGeometry } from './aquarium-geometry';
+import { createFishGeometry, createSwimmingBounds } from './aquarium-geometry';
 import { createFishAvoidance } from './aquarium-avoidance';
 import { createReefBarrier, type ReefTriangle } from './aquarium-reef';
 
@@ -167,7 +167,8 @@ async function initialize(container: HTMLElement) {
   const fish = species.map(name => {
     const group = makeModel(models[name]);
     scene.add(group);
-    return { name, group, bounds: new Box3(), nextPosition: new Vector3(), nextOrientation: new Quaternion() };
+    const bounds = createSwimmingBounds(models[name].meshes);
+    return { name, group, bounds, steering: 0, nextPosition: new Vector3(), nextOrientation: new Quaternion() };
   });
   const reefBarriers = [reef, distantReef].map(group => {
     const triangles: ReefTriangle[] = [];
@@ -194,7 +195,6 @@ async function initialize(container: HTMLElement) {
     return createReefBarrier(mesh.geometry.getAttribute('position').getZ(0), triangles);
   });
   const avoidFish = createFishAvoidance(reefBarriers);
-  const partBounds = new Box3();
   let lastAvoidanceTime = 0;
 
   // The original caustic texture contains black, low-alpha shadows. Its UVs
@@ -314,8 +314,9 @@ async function initialize(container: HTMLElement) {
   function render() {
     water.uniforms.time.value = elapsed;
     causticTexture.offset.x = -(elapsed*.5)%1;
-    for (const { name, group, bounds, nextPosition, nextOrientation } of fish) {
-      const { steering, speed } = swimming(name, elapsed, group.position, group.quaternion);
+    for (const { name, group, steering: liveSteering, nextPosition, nextOrientation } of fish) {
+      const recorded = swimming(name, elapsed, group.position, group.quaternion);
+      const speed = recorded.speed, steering = recorded.steering*.35+liveSteering*.65;
       for (const child of group.children) {
         const mesh = child as Mesh;
         if (mesh.userData.body) {
@@ -343,19 +344,12 @@ async function initialize(container: HTMLElement) {
           mesh.rotation.z = -steering/3;
         }
       }
-      bounds.makeEmpty();
-      for (const child of group.children) {
-        const mesh = child as Mesh;
-        mesh.updateMatrix();
-        if (mesh.userData.body || !mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
-        partBounds.copy(mesh.geometry.boundingBox!).applyMatrix4(mesh.matrix);
-        bounds.union(partBounds);
-      }
-      swimming(name, elapsed+.8, nextPosition, nextOrientation);
+      swimming(name, elapsed+1.6, nextPosition, nextOrientation);
     }
-    avoidFish(fish.map(({ group, bounds, nextPosition, nextOrientation }) => ({
+    const liveSteering = avoidFish(fish.map(({ group, bounds, nextPosition, nextOrientation }) => ({
       position: group.position, orientation: group.quaternion, bounds, nextPosition, nextOrientation,
     })), elapsed-lastAvoidanceTime);
+    fish.forEach((body, i) => { body.steering = liveSteering[i]; });
     lastAvoidanceTime = elapsed;
     bubbleTime.value = elapsed;
     renderer.render(scene, camera);
